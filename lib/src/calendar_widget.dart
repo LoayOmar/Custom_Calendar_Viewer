@@ -24,9 +24,13 @@ class CustomCalendarViewer extends StatefulWidget {
   final TextStyle activeDayNumStyle;
   final TextStyle dropDownYearsStyle;
   final String local;
+  final Duration duration;
+  final Duration yearDuration;
 
   const CustomCalendarViewer({
     super.key,
+    this.duration = const Duration(milliseconds: 600),
+    this.yearDuration = const Duration(milliseconds: 500),
     this.dates,
     this.ranges,
     this.datesColors,
@@ -89,7 +93,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: widget.duration,
     );
 
     _offsetAnimation = _offsetTween.animate(_controller);
@@ -205,7 +209,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     void backArrow() {
       setState(() {
         triggerAnimation(toRight: widget.local == 'en' ? true : false);
-        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        Future.delayed(widget.duration).then((value) {
           setState(() {
             addMonth--;
             currentDate = DateTime(currentDate.year, currentDate.month - 1, 1);
@@ -217,7 +221,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     void forwardArrow() {
       setState(() {
         triggerAnimation(toRight: widget.local == 'en' ? false : true);
-        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        Future.delayed(widget.duration).then((value) {
           setState(() {
             addMonth++;
             currentDate = DateTime(currentDate.year, currentDate.month + 1, 1);
@@ -440,7 +444,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           ],
         ),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
+          duration: widget.yearDuration,
           margin: edge(
             left: 110,
             top: 35,
