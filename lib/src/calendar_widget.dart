@@ -276,7 +276,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          backArrow();
+                          widget.local == 'en' ? backArrow() : forwardArrow();
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'
@@ -297,7 +297,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          forwardArrow();
+                          widget.local == 'en' ? forwardArrow() : backArrow();
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'
