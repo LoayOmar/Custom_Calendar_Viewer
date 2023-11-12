@@ -249,7 +249,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer> with Single
                         onTap: () {
                           setState(() {
                             triggerAnimation(
-                                toRight: widget.local == 'en'? false : true
+                                toRight: widget.local == 'en'? true : false
                             );
                             Future.delayed(const Duration(milliseconds: 1000)).then((value) {
                               setState(() {
@@ -261,6 +261,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer> with Single
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'? 'assets/icons/back.svg' : 'assets/icons/forward.svg',
+                          package: 'custom_calendar_viewer',
                           color: widget.movingArrowColor,
                           width: widget.movingArrowSize,
                           height: widget.movingArrowSize,
@@ -277,7 +278,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer> with Single
                         onTap: () {
                           setState((){
                             triggerAnimation(
-                                toRight: widget.local == 'en'? true : false
+                                toRight: widget.local == 'en'? false : true
                             );
                             Future.delayed(const Duration(milliseconds: 1000)).then((value) {
                               setState(() {
@@ -289,6 +290,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer> with Single
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'? 'assets/icons/forward.svg' : 'assets/icons/back.svg',
+                          package: 'custom_calendar_viewer',
                           color: widget.movingArrowColor,
                           width: widget.movingArrowSize,
                           height: widget.movingArrowSize,
@@ -315,71 +317,104 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer> with Single
                 itemCount: 7,
               ),
             ),
-            SizedBox(
-              height:
-              (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
-                  ? 285
-                  : 240,
-              child: GridView.builder(
-                padding: edge(left: 45, right: 45),
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7),
-                itemBuilder: (_, index) {
-                  if (count == 0) {
-                    int dateIndex = widget.dates == null
-                        ? -1
-                        : widget.dates!.indexWhere((date) => date.year == currentDate.year &&
-                        date.month == currentDate.month &&
-                        date.day == ((index + 1) - extraDays));
-                    List inRange = checkInRange(DateTime(currentDate.year, currentDate.month, (index + 1) - extraDays));
-                    return SlideTransition(
-                      position: _offsetAnimation,
-                      child: Container(
-                        alignment: Alignment.center,
-                        margin: inRange[0] == -1? edge(left: 1, right: 1, top: 1, bottom: 1) : inRange[1] == 'start'?
-                        edge(left: 1, top: 1, bottom: 1) : inRange[1] == 'end'?
-                        edge(right: 1, top: 1, bottom: 1) : edge(top: 1, bottom: 1),
-                        decoration: BoxDecoration(
-                          borderRadius: inRange[0] == -1? BorderRadius.circular(40) : inRange[1] == 'start'?
-                          (widget.local == 'en'? const BorderRadius.only(topLeft: Radius.circular(40), bottomLeft: Radius.circular(40)) :
-                          const BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)))
-                              : inRange[1] == 'end'?
-                          (widget.local == 'en'? const BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)) :
-                          const BorderRadius.only(topLeft: Radius.circular(40), bottomLeft: Radius.circular(40))) :
-                          BorderRadius.zero,
-                          border: (DateTime(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              DateTime.now().day) ==
-                              DateTime(
-                                  currentDate.year,
-                                  currentDate.month,
-                                  (index + 1) - extraDays) &&
-                              widget.showCurrentDayBorderColor)
-                              ? Border.all(
-                              color: widget.currentDayBorderColor)
-                              : null,
-                          color: inRange[0] == -1? (dateIndex != -1
-                              ? widget.datesColors == null
-                              ? widget.activeColor
-                              : widget.datesColors![dateIndex]
-                              : Colors.transparent) : widget.rangesColors == null? widget.activeColor : widget.rangesColors![inRange[0]],
-                        ),
-                        child: Text(
-                          widget.local == 'en'? '${(index + 1) - extraDays}' : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
-                          style: (dateIndex != -1 || inRange[0] != -1)
-                              ? widget.activeDayNumStyle
-                              : widget.dayNumStyle,
-                        ),
-                      ),
-                    );
+            GestureDetector(
+              onHorizontalDragEnd: (DragEndDetails details) {
+                if (details.primaryVelocity != null) {
+                  if (details.primaryVelocity! > 0) {
+                    // User dragged from left to right
+                    setState(() {
+                      triggerAnimation(
+                          toRight: widget.local == 'en'? true : false
+                      );
+                      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+                        setState(() {
+                          addMonth--;
+                          currentDate = DateTime(currentDate.year, currentDate.month - 1, 1);
+                        });
+                      });
+                    });
                   } else {
-                    count--;
-                    return const SizedBox();
+                    // User dragged from right to left
+                    setState((){
+                      triggerAnimation(
+                          toRight: widget.local == 'en'? false : true
+                      );
+                      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+                        setState(() {
+                          addMonth++;
+                          currentDate = DateTime(currentDate.year, currentDate.month + 1, 1);
+                        });
+                      });
+                    });
                   }
-                },
-                itemCount: daysInMonth + extraDays,
+                }
+              },
+              child: SizedBox(
+                height:
+                (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
+                    ? 285
+                    : 240,
+                child: GridView.builder(
+                  padding: edge(left: 45, right: 45),
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7),
+                  itemBuilder: (_, index) {
+                    if (count == 0) {
+                      int dateIndex = widget.dates == null
+                          ? -1
+                          : widget.dates!.indexWhere((date) => date.year == currentDate.year &&
+                          date.month == currentDate.month &&
+                          date.day == ((index + 1) - extraDays));
+                      List inRange = checkInRange(DateTime(currentDate.year, currentDate.month, (index + 1) - extraDays));
+                      return SlideTransition(
+                        position: _offsetAnimation,
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: inRange[0] == -1? edge(left: 1, right: 1, top: 1, bottom: 1) : inRange[1] == 'start'?
+                          edge(left: 1, top: 1, bottom: 1) : inRange[1] == 'end'?
+                          edge(right: 1, top: 1, bottom: 1) : edge(top: 1, bottom: 1),
+                          decoration: BoxDecoration(
+                            borderRadius: inRange[0] == -1? BorderRadius.circular(40) : inRange[1] == 'start'?
+                            (widget.local == 'en'? const BorderRadius.only(topLeft: Radius.circular(40), bottomLeft: Radius.circular(40)) :
+                            const BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)))
+                                : inRange[1] == 'end'?
+                            (widget.local == 'en'? const BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)) :
+                            const BorderRadius.only(topLeft: Radius.circular(40), bottomLeft: Radius.circular(40))) :
+                            BorderRadius.zero,
+                            border: (DateTime(
+                                DateTime.now().year,
+                                DateTime.now().month,
+                                DateTime.now().day) ==
+                                DateTime(
+                                    currentDate.year,
+                                    currentDate.month,
+                                    (index + 1) - extraDays) &&
+                                widget.showCurrentDayBorderColor)
+                                ? Border.all(
+                                color: widget.currentDayBorderColor)
+                                : null,
+                            color: inRange[0] == -1? (dateIndex != -1
+                                ? widget.datesColors == null
+                                ? widget.activeColor
+                                : widget.datesColors![dateIndex]
+                                : Colors.transparent) : widget.rangesColors == null? widget.activeColor : widget.rangesColors![inRange[0]],
+                          ),
+                          child: Text(
+                            widget.local == 'en'? '${(index + 1) - extraDays}' : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
+                            style: (dateIndex != -1 || inRange[0] != -1)
+                                ? widget.activeDayNumStyle
+                                : widget.dayNumStyle,
+                          ),
+                        ),
+                      );
+                    } else {
+                      count--;
+                      return const SizedBox();
+                    }
+                  },
+                  itemCount: daysInMonth + extraDays,
+                ),
               ),
             ),
           ],
