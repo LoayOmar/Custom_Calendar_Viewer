@@ -32,7 +32,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +57,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Colors.amber,
           ],
           ranges: [
-            RangeDate(start: DateTime.now(), end: DateTime.now().add(const Duration(days: 4))),
-            RangeDate(start: DateTime.now().add(const Duration(days: 6)), end: DateTime.now().add(const Duration(days: 11))),
-            RangeDate(start: DateTime.now().add(const Duration(days: 13)), end: DateTime.now().add(const Duration(days: 15))),
+            RangeDate(
+                start: DateTime.now(),
+                end: DateTime.now().add(const Duration(days: 4))),
+            RangeDate(
+                start: DateTime.now().add(const Duration(days: 6)),
+                end: DateTime.now().add(const Duration(days: 11))),
+            RangeDate(
+                start: DateTime.now().add(const Duration(days: 13)),
+                end: DateTime.now().add(const Duration(days: 15))),
           ],
           rangesColors: const [
             Colors.red,
@@ -70,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
           showCurrentDayBorderColor: false,
         ),
       ),
-
     );
   }
 }

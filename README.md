@@ -1,9 +1,9 @@
 # Custom Calendar Viewer
 
-<a href="https://pub.dev/packages/animated_toggle"><img src="https://img.shields.io/pub/v/custom_calendar_viewer.svg" alt="Pub"></a>
-<a href="https://pub.dev/packages/animated_toggle/score"><img src="https://img.shields.io/pub/likes/custom_calendar_viewer?logo=flutter" alt="Pub likes"></a>
-<a href="https://pub.dev/packages/animated_toggle/score"><img src="https://img.shields.io/pub/popularity/custom_calendar_viewer?logo=flutter" alt="Pub popularity"></a>
-<a href="https://pub.dev/packages/animated_toggle/score"><img src="https://img.shields.io/pub/points/custom_calendar_viewer?logo=flutter" alt="Pub points"></a>
+<a href="https://pub.dev/packages/custom_calendar_viewer"><img src="https://img.shields.io/pub/v/custom_calendar_viewer.svg" alt="Pub"></a>
+<a href="https://pub.dev/packages/custom_calendar_viewer/score"><img src="https://img.shields.io/pub/likes/custom_calendar_viewer?logo=flutter" alt="Pub likes"></a>
+<a href="https://pub.dev/packages/custom_calendar_viewer/score"><img src="https://img.shields.io/pub/popularity/custom_calendar_viewer?logo=flutter" alt="Pub popularity"></a>
+<a href="https://pub.dev/packages/custom_calendar_viewer/score"><img src="https://img.shields.io/pub/points/custom_calendar_viewer?logo=flutter" alt="Pub points"></a>
 
 * Amazing package help you to view your plans or important dates in calendar.
 
