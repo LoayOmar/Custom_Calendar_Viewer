@@ -202,6 +202,30 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       }
     }
 
+    void backArrow() {
+      setState(() {
+        triggerAnimation(toRight: widget.local == 'en' ? true : false);
+        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+          setState(() {
+            addMonth--;
+            currentDate = DateTime(currentDate.year, currentDate.month - 1, 1);
+          });
+        });
+      });
+    }
+
+    void forwardArrow() {
+      setState(() {
+        triggerAnimation(toRight: widget.local == 'en' ? false : true);
+        Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+          setState(() {
+            addMonth++;
+            currentDate = DateTime(currentDate.year, currentDate.month + 1, 1);
+          });
+        });
+      });
+    }
+
     return Stack(
       children: [
         Column(
@@ -252,18 +276,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          setState(() {
-                            triggerAnimation(
-                                toRight: widget.local == 'en' ? true : false);
-                            Future.delayed(const Duration(milliseconds: 1000))
-                                .then((value) {
-                              setState(() {
-                                addMonth--;
-                                currentDate = DateTime(
-                                    currentDate.year, currentDate.month - 1, 1);
-                              });
-                            });
-                          });
+                          backArrow();
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'
@@ -284,18 +297,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                         highlightColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          setState(() {
-                            triggerAnimation(
-                                toRight: widget.local == 'en' ? false : true);
-                            Future.delayed(const Duration(milliseconds: 1000))
-                                .then((value) {
-                              setState(() {
-                                addMonth++;
-                                currentDate = DateTime(
-                                    currentDate.year, currentDate.month + 1, 1);
-                              });
-                            });
-                          });
+                          forwardArrow();
                         },
                         child: SvgPicture.asset(
                           widget.local == 'en'
@@ -333,32 +335,10 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 if (details.primaryVelocity != null) {
                   if (details.primaryVelocity! > 0) {
                     // User dragged from left to right
-                    setState(() {
-                      triggerAnimation(
-                          toRight: widget.local == 'en' ? true : false);
-                      Future.delayed(const Duration(milliseconds: 1000))
-                          .then((value) {
-                        setState(() {
-                          addMonth--;
-                          currentDate = DateTime(
-                              currentDate.year, currentDate.month - 1, 1);
-                        });
-                      });
-                    });
+                    widget.local == 'en' ? backArrow() : forwardArrow();
                   } else {
                     // User dragged from right to left
-                    setState(() {
-                      triggerAnimation(
-                          toRight: widget.local == 'en' ? false : true);
-                      Future.delayed(const Duration(milliseconds: 1000))
-                          .then((value) {
-                        setState(() {
-                          addMonth++;
-                          currentDate = DateTime(
-                              currentDate.year, currentDate.month + 1, 1);
-                        });
-                      });
-                    });
+                    widget.local == 'en' ? forwardArrow() : backArrow();
                   }
                 }
               },
