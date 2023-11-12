@@ -62,6 +62,8 @@ final TextStyle dayNumStyle;
 final TextStyle activeDayNumStyle;
 final TextStyle dropDownYearsStyle;
 final String local;
+final Duration duration;
+final Duration yearDuration;
 ```
 
 ## Usage
