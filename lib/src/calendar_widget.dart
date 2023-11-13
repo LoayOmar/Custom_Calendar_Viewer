@@ -7,27 +7,145 @@ import 'package:intl/intl.dart';
 import 'models/range_model.dart';
 
 class CustomCalendarViewer extends StatefulWidget {
+
+  /// - Here you can add specific active days dates
   final List<DateTime>? dates;
+  /// - Here you can add specific active ranges dates
   final List<RangeDate>? ranges;
+
+
+  /// - Here you can add the active days colors make sure if you used this, this should have the same dates length
+  ///
+  /// - Note if you didn't use datesColors or rangesColor the widget will use activeColor
   final List<Color>? datesColors;
+  /// - Here you can add the active ranges colors make sure if you used this, this should have the same ranges length
+  ///
+  /// - Note if you didn't use datesColors or rangesColor the widget will use activeColor
   final List<Color>? rangesColors;
+
+
+  /// - Here you can add the active days text colors make sure if you used this, this should have the same dates length
+  ///
+  /// - Note if you didn't use datesTextColors or rangeTextColors the widget will use the color in activeDayNumStyle
+  final List<Color>? datesTextColors;
+  /// - Here you can add the active ranges text colors make sure if you used this, this should have the same ranges length
+  ///
+  /// - Note if you didn't use datesTextColors or rangeTextColors the widget will use the color in activeDayNumStyle
+  final List<Color>? rangeTextColors;
+
+
+  /// - Here you can control the active color
   final Color activeColor;
+
+
+  /// - Here you can control the drop down arrow color
   final Color dropArrowColor;
+
+
+  /// - Here you can control the moving arrow color
   final Color movingArrowColor;
-  final Color currentDayBorderColor;
-  final bool showCurrentDayBorderColor;
+
+
+  /// - You can use specific header background color for your calendar
+  final Color headerBackground;
+
+
+  /// - You can use specific days header background color for your calendar
+  final Color daysHeaderBackground;
+
+
+  /// - You can use specific days body background color for your calendar
+  final Color daysBodyBackground;
+
+
+  /// - Here you can customize you current day border or this will use default border
+  final Border? currentDayBorder;
+
+
+  /// - If you need to add border for all days expect the current day
+  final Border? dayBorder;
+
+
+  /// - You can control if you need to show the border for current day or not default is true
+  final bool showCurrentDayBorder;
+
+
+  /// - From here you can control the size for drop down arrow size
   final double dropArrowSize;
+
+
+  /// - From here you can control the moving arrow size
   final double movingArrowSize;
+
+
+  /// - you can control the radius for the active days
+  final double radius;
+
+
+  /// - From these you can handel the style for header text in the calendar
   final TextStyle headerStyle;
+
+
+  /// - From these you can handel the style for day name text in the calendar
   final TextStyle dayNameStyle;
+
+
+  /// - From these you can handel the style for day number text in the calendar
   final TextStyle dayNumStyle;
+
+
+  /// - From these you can handel the style for active day number text in the calendar
   final TextStyle activeDayNumStyle;
+
+
+  /// - From these you can handel the style for years text in the dropDown
   final TextStyle dropDownYearsStyle;
+
+
+  /// - You can use 'ar' to show the calendar Arabic or 'en'(default) for English
   final String local;
+
+
+  /// - This the duration for the calender when change the month
   final Duration duration;
+
+
+  /// - This the duration for the years when open the years widget
   final Duration yearDuration;
 
-  const CustomCalendarViewer({
+
+  /// - With these you can handel the margin left for the header
+  final double headerMarginLeft;
+
+
+  /// - With these you can handel the margin right for the header
+  final double headerMarginRight;
+
+
+  /// - With these you can handel the margin top for the header
+  final double headerMarginTop;
+
+
+  /// - With these you can handel the margin bottom for the header
+  final double headerMarginBottom;
+
+
+  /// - With these you can handel the margin left for the body
+  final double daysMarginLeft;
+
+
+  /// - With these you can handel the margin right for the body
+  final double daysMarginRight;
+
+
+  /// - With these you can handel the margin top for the body
+  final double daysMarginTop;
+
+
+  /// - With these you can handel the margin bottom for the body
+  final double daysMarginBottom;
+
+   const CustomCalendarViewer({
     super.key,
     this.duration = const Duration(milliseconds: 600),
     this.yearDuration = const Duration(milliseconds: 500),
@@ -35,13 +153,20 @@ class CustomCalendarViewer extends StatefulWidget {
     this.ranges,
     this.datesColors,
     this.rangesColors,
+     this.datesTextColors,
+     this.rangeTextColors,
     this.activeColor = Colors.blue,
     this.dropArrowColor = Colors.black,
     this.movingArrowColor = Colors.black,
-    this.currentDayBorderColor = Colors.blue,
-    this.showCurrentDayBorderColor = true,
+    this.currentDayBorder,
+    this.dayBorder,
+    this.headerBackground = Colors.transparent,
+    this.daysHeaderBackground = Colors.transparent,
+    this.daysBodyBackground = Colors.transparent,
+    this.showCurrentDayBorder = true,
     this.dropArrowSize = 34,
     this.movingArrowSize = 16,
+    this.radius = 40,
     this.headerStyle = const TextStyle(
         fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black),
     this.dropDownYearsStyle = const TextStyle(
@@ -55,6 +180,14 @@ class CustomCalendarViewer extends StatefulWidget {
       fontSize: 14,
       color: Colors.white,
     ),
+    this.headerMarginLeft = 42,
+    this.headerMarginRight = 42,
+    this.headerMarginTop = 8,
+    this.headerMarginBottom = 10,
+    this.daysMarginLeft = 45,
+    this.daysMarginRight = 45,
+    this.daysMarginTop = 0,
+    this.daysMarginBottom = 0,
     this.local = 'en',
   });
 
@@ -234,8 +367,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       children: [
         Column(
           children: [
-            Padding(
-              padding: edge(left: 42, right: 42, top: 8, bottom: 10),
+            Container(
+              margin: edge(left: widget.headerMarginLeft, right: widget.headerMarginRight, top: widget.headerMarginTop, bottom: widget.headerMarginBottom),
+              color: widget.headerBackground,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -287,7 +421,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                               ? 'assets/icons/back.svg'
                               : 'assets/icons/forward.svg',
                           package: 'custom_calendar_viewer',
-                          color: widget.movingArrowColor,
+                          colorFilter: ColorFilter.mode(widget.movingArrowColor, BlendMode.srcIn),
                           width: widget.movingArrowSize,
                           height: widget.movingArrowSize,
                         ),
@@ -308,7 +442,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                               ? 'assets/icons/forward.svg'
                               : 'assets/icons/back.svg',
                           package: 'custom_calendar_viewer',
-                          color: widget.movingArrowColor,
+                          colorFilter: ColorFilter.mode(widget.movingArrowColor, BlendMode.srcIn),
                           width: widget.movingArrowSize,
                           height: widget.movingArrowSize,
                         ),
@@ -318,10 +452,12 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ],
               ),
             ),
-            SizedBox(
+            Container(
               height: 40,
+              color: widget.daysHeaderBackground,
+              margin: edge(left: widget.daysMarginLeft, right: widget.daysMarginRight, top: widget.daysMarginTop, bottom: widget.daysMarginBottom),
               child: GridView.builder(
-                padding: edge(left: 45, right: 45),
+                padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 7),
@@ -346,15 +482,17 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   }
                 }
               },
-              child: SizedBox(
+              child: Container(
+                color: widget.daysBodyBackground,
+                margin: edge(left: widget.daysMarginLeft, right: widget.daysMarginRight, top: widget.daysMarginTop, bottom: widget.daysMarginBottom),
                 height:
                     (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
                         ? 285
                         : 240,
                 child: GridView.builder(
-                  padding: edge(left: 45, right: 45),
+                  padding: EdgeInsets.zero,
                   physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 7),
                   itemBuilder: (_, index) {
                     if (count == 0) {
@@ -379,25 +517,25 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                       : edge(top: 1, bottom: 1),
                           decoration: BoxDecoration(
                             borderRadius: inRange[0] == -1
-                                ? BorderRadius.circular(40)
+                                ? BorderRadius.circular(widget.radius)
                                 : inRange[1] == 'start'
                                     ? (widget.local == 'en'
-                                        ? const BorderRadius.only(
-                                            topLeft: Radius.circular(40),
-                                            bottomLeft: Radius.circular(40))
-                                        : const BorderRadius.only(
-                                            topRight: Radius.circular(40),
-                                            bottomRight: Radius.circular(40)))
+                                        ?  BorderRadius.only(
+                                            topLeft: Radius.circular(widget.radius),
+                                            bottomLeft: Radius.circular(widget.radius))
+                                        :  BorderRadius.only(
+                                            topRight: Radius.circular(widget.radius),
+                                            bottomRight: Radius.circular(widget.radius)))
                                     : inRange[1] == 'end'
                                         ? (widget.local == 'en'
-                                            ? const BorderRadius.only(
-                                                topRight: Radius.circular(40),
+                                            ?  BorderRadius.only(
+                                                topRight: Radius.circular(widget.radius),
                                                 bottomRight:
-                                                    Radius.circular(40))
-                                            : const BorderRadius.only(
-                                                topLeft: Radius.circular(40),
+                                                    Radius.circular(widget.radius))
+                                            :  BorderRadius.only(
+                                                topLeft: Radius.circular(widget.radius),
                                                 bottomLeft:
-                                                    Radius.circular(40)))
+                                                    Radius.circular(widget.radius)))
                                         : BorderRadius.zero,
                             border: (DateTime(
                                             DateTime.now().year,
@@ -407,10 +545,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                             currentDate.year,
                                             currentDate.month,
                                             (index + 1) - extraDays) &&
-                                    widget.showCurrentDayBorderColor)
-                                ? Border.all(
-                                    color: widget.currentDayBorderColor)
-                                : null,
+                                    widget.showCurrentDayBorder)
+                                ? widget.currentDayBorder?? Border.all(color: Colors.blue)
+                                : widget.dayBorder,
                             color: inRange[0] == -1
                                 ? (dateIndex != -1
                                     ? widget.datesColors == null
@@ -427,7 +564,10 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                 : convertToArOrEnNumerals(
                                     '${(index + 1) - extraDays}'),
                             style: (dateIndex != -1 || inRange[0] != -1)
-                                ? widget.activeDayNumStyle
+                                ? ((widget.datesTextColors != null)?
+                            widget.activeDayNumStyle.copyWith(
+                              color: inRange[0] == -1? widget.datesTextColors![dateIndex] : widget.rangeTextColors![inRange[0]],
+                            ) :widget.activeDayNumStyle)
                                 : widget.dayNumStyle,
                           ),
                         ),

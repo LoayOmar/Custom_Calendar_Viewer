@@ -7,9 +7,9 @@
 
 * Amazing package help you to view your plans or important dates in calendar.
 
-![Days and Ranges](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/V1.gif) ![Ar Ex](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/9.jpeg)
-![Ex 1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/1.jpeg) ![Ex 2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/2.jpeg) ![Ex 3](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/3.jpeg) ![Ex 4](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/4.jpeg)
-![Ex 5](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/5.jpeg) ![Ex 6](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/6.jpeg) ![Ex 7](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/7.jpeg) ![Ex 8](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/8.jpeg)
+![Days and Ranges](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/V1.gif) ![Ar Ex](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/9.jpeg) ![Ex 1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/1.jpeg)
+![Ex 2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/2.jpeg) ![Ex 3](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/3.jpeg) ![Ex 4](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/4.jpeg) ![Ex 5](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/5.jpeg)
+![Ex 10](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/10.jpeg) ![Ex 6](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/6.jpeg) ![Ex 7](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/7.jpeg) ![Ex 8](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/8.jpeg)
 
 
 ## Installation
@@ -49,13 +49,20 @@ final List<DateTime>? dates;
 final List<RangeDate>? ranges;
 final List<Color>? datesColors;
 final List<Color>? rangesColors;
+final List<Color>? datesTextColors;
+final List<Color>? rangeTextColors;
 final Color activeColor;
 final Color dropArrowColor;
 final Color movingArrowColor;
-final Color currentDayBorderColor;
-final bool showCurrentDayBorderColor;
+final Color headerBackground;
+final Color daysHeaderBackground;
+final Color daysBodyBackground;
+final Border? currentDayBorder;
+final Border? dayBorder;
+final bool showCurrentDayBorder;
 final double dropArrowSize;
 final double movingArrowSize;
+final double radius;
 final TextStyle headerStyle;
 final TextStyle dayNameStyle;
 final TextStyle dayNumStyle;
@@ -64,6 +71,14 @@ final TextStyle dropDownYearsStyle;
 final String local;
 final Duration duration;
 final Duration yearDuration;
+final double headerMarginLeft;
+final double headerMarginRight;
+final double headerMarginTop;
+final double headerMarginBottom;
+final double daysMarginLeft;
+final double daysMarginRight;
+final double daysMarginTop;
+final double daysMarginBottom;
 ```
 
 ## Usage
@@ -106,8 +121,8 @@ CustomCalendarViewer(
 
 ## Additional information
 
-Say to me in GitHub what you need to see in the package in the next update.
-Wait for more feature soon.
+* Say to me in GitHub what you need to see in the package in the next update.
+* Wait for more feature soon.
 
 ## Author
 
