@@ -7,9 +7,16 @@
 
 * Amazing package help you to view your plans or important dates in calendar.
 
-![Days and Ranges](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/V1.gif) ![Ar Ex](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/9.jpeg) ![Ex 1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/1.jpeg)
-![Ex 2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/2.jpeg) ![Ex 3](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/3.jpeg) ![Ex 4](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/4.jpeg) ![Ex 5](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/5.jpeg)
-![Ex 10](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/10.jpeg) ![Ex 6](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/6.jpeg) ![Ex 7](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/7.jpeg) ![Ex 8](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/8.jpeg)
+|         ![Days and Ranges](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/V1.gif)          |             ![Ar Ex](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/9.jpeg)             |             ![Ex 1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/1.jpeg)              |            ![Ex 2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/2.jpeg)             |
+|:--------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------:|
+|              ![Ex 3](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/3.jpeg)              |             ![Ex 4](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/4.jpeg)              |             ![Ex 5](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/5.jpeg)              |           ![Ex 10](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/10.jpeg)            |
+| :------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
+|              ![Ex 6](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/6.jpeg)              |             ![Ex 7](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/7.jpeg)              |             ![Ex 8](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/8.jpeg)              |           ![Ex 11](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/11.jpeg)            |
+| :------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
+|             ![Ex 12](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/12.jpeg)             |            ![Ex 13](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/13.jpeg)             |                                                              ![]()                                                              |                                                             ![]()                                                             |
+| :------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
+
+
 
 
 ## Installation
@@ -29,6 +36,8 @@ dependencies:
 * you can use your own style for each text.
 * The package have animation when you moving between months.
 * With this package really you will be able to control your calendar view.
+* You can handel the color for each active day.
+* You can use Tooltip to give more info about this day.
 
 ## Getting started
 
@@ -79,6 +88,18 @@ final double daysMarginLeft;
 final double daysMarginRight;
 final double daysMarginTop;
 final double daysMarginBottom;
+final String toolTipMessage;
+final double? toolTipHeight;
+final EdgeInsets? toolTipPadding;
+final EdgeInsets? toolTipMargin;
+final bool toolTipPreferBelow;
+final TooltipTriggerMode toolTipTriggerMode;
+final Decoration? toolTipDecoration;
+final TextStyle? toolTipTextStyle;
+final TextAlign? toolTipTextAlign;
+final Duration? toolTipWaitDuration;
+final Duration? toolTipShowDuration;
+final bool showTooltip;
 ```
 
 ## Usage
