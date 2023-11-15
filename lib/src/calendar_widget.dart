@@ -1087,7 +1087,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         textColor: addDayTextColor,
       ));
     }
-    if(widget.onDatesUpdated != null) {
+    if (widget.onDatesUpdated != null) {
       widget.onDatesUpdated!(widget.dates!);
     }
   }
@@ -1136,7 +1136,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             textColor: addRangeTextColor));
       }
     }
-    if(widget.onRangesUpdated != null){
+    if (widget.onRangesUpdated != null) {
       widget.onRangesUpdated!(widget.ranges!);
     }
   }
