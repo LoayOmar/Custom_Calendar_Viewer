@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: local == 'en'? TextDirection.ltr : TextDirection.rtl,
+      textDirection: local == 'en' ? TextDirection.ltr : TextDirection.rtl,
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.only(top: 150),
@@ -96,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
             local: local,
             dates: dates,
             ranges: ranges,
+            calendarType: CustomCalendarType.multiDatesAndRanges,
             onDayTapped: (date) {
               // Handel your code here.
               print(date);

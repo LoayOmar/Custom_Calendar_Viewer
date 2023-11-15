@@ -39,6 +39,7 @@ dependencies:
 * you can use your own style for each text.
 * The package have animation when you moving between months.
 * With this package really you will be able to control your calendar view.
+* The calendar work with 2 language Arabic and English.
 * You can handel the color for each active day (Text or Background).
 * You can use Tooltip to give more info about this day.
 * Now you can add multiple dates or ranges when the application is started.
