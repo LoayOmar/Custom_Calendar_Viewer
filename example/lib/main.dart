@@ -32,76 +32,82 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String local = 'en';
+  List<Date> dates = [
+    Date(
+      date: DateTime(2023, 11, 8),
+      color: Colors.red,
+    ),
+    Date(
+      date: DateTime(2023, 11, 10),
+      color: Colors.amber,
+    ),
+    Date(
+      date: DateTime(2023, 11, 7),
+      color: Colors.amber,
+    ),
+    Date(
+      date: DateTime(2023, 11, 1),
+      color: Colors.red,
+    ),
+    Date(
+      date: DateTime(2023, 11, 4),
+      color: Colors.white,
+      textColor: Colors.red,
+    ),
+    Date(
+      date: DateTime(2023, 11, 5),
+      color: Colors.white,
+      textColor: Colors.red,
+    ),
+    Date(
+      date: DateTime(2023, 11, 18),
+      color: Colors.blue,
+      textColor: Colors.amber,
+    ),
+    Date(
+      date: DateTime(2023, 11, 22),
+    ),
+  ];
+  List<RangeDate> ranges = [
+    RangeDate(
+      start: DateTime(2023, 11, 12),
+      end: DateTime(2023, 11, 15),
+      color: Colors.red,
+    ),
+    RangeDate(
+      start: DateTime(2023, 11, 24),
+      end: DateTime(2023, 11, 27),
+      color: Colors.amber,
+    ),
+    RangeDate(
+      start: DateTime(2023, 11, 30),
+      end: DateTime(2023, 11, 29),
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 150),
-        child: CustomCalendarViewer(
-          dates: [
-            DateTime.now().subtract(const Duration(days: 2)),
-            DateTime.now().subtract(const Duration(days: 3)),
-            DateTime.now().subtract(const Duration(days: 5)),
-            DateTime.now().add(const Duration(days: 16)),
-            DateTime.now().add(const Duration(days: 18)),
-            DateTime.now().add(const Duration(days: 19)),
-            DateTime.now().add(const Duration(days: 24)),
-            DateTime(2023, 11, 30),
-            DateTime(2023, 11, 1),
-            DateTime(2023, 11, 2),
-            DateTime(2023, 11, 3),
-            DateTime(2023, 11, 4),
-          ],
-          datesColors: const [
-            Colors.amber,
-            Colors.red,
-            Colors.amber,
-            Colors.blue,
-            Colors.red,
-            Colors.amber,
-            Colors.amber,
-            Colors.white,
-            Colors.white,
-            Colors.white,
-            Colors.white,
-            Colors.white,
-          ],
-          datesTextColors: const [
-            Colors.white,
-            Colors.black,
-            Colors.white,
-            Colors.yellow,
-            Colors.black,
-            Colors.white,
-            Colors.white,
-            Colors.red,
-            Colors.red,
-            Colors.red,
-            Colors.red,
-            Colors.red,
-          ],
-          ranges: [
-            RangeDate(
-                start: DateTime.now(),
-                end: DateTime.now().add(const Duration(days: 4))),
-            RangeDate(
-                start: DateTime.now().add(const Duration(days: 6)),
-                end: DateTime.now().add(const Duration(days: 11))),
-            RangeDate(
-                start: DateTime.now().add(const Duration(days: 13)),
-                end: DateTime.now().add(const Duration(days: 15))),
-          ],
-          rangesColors: const [
-            Colors.red,
-            Colors.amber,
-            Colors.blue,
-          ],
-          rangeTextColors: const [
-            Colors.black,
-            Colors.white,
-            Colors.yellow,
-          ],
-          showCurrentDayBorder: false,
+    return Directionality(
+      textDirection: local == 'en'? TextDirection.ltr : TextDirection.rtl,
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.only(top: 150),
+          child: CustomCalendarViewer(
+            local: local,
+            dates: dates,
+            ranges: ranges,
+            onDayTapped: (date) {
+              // Handel your code here.
+              print(date);
+            },
+            onDatesUpdated: (newDates) {
+              print(newDates.length);
+            },
+            onRangesUpdated: (newRanges) {
+              print(newRanges.length);
+            },
+            showCurrentDayBorder: false,
+          ),
         ),
       ),
     );

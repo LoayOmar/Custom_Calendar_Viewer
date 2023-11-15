@@ -1,6 +1,11 @@
-class RangeDate {
-  final DateTime start;
-  final DateTime end;
+import 'package:flutter/material.dart';
 
-  RangeDate({required this.start, required this.end});
+class RangeDate {
+  DateTime start;
+  DateTime end;
+  Color? color;
+  Color? textColor;
+
+  RangeDate(
+      {required this.start, required this.end, this.color, this.textColor});
 }

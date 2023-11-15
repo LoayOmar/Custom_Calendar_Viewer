@@ -1,37 +1,32 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
+import 'models/date_model.dart';
 import 'models/range_model.dart';
 
 class CustomCalendarViewer extends StatefulWidget {
   /// - Here you can add specific active days dates
-  final List<DateTime>? dates;
+  /// - This  will take Date Model
+  /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
+  final List<Date>? dates;
 
   /// - Here you can add specific active ranges dates
+  /// - This  will take RangeDate Model
+  /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
   final List<RangeDate>? ranges;
 
-  /// - Here you can add the active days colors make sure if you used this, this should have the same dates length
-  ///
-  /// - Note if you didn't use datesColors or rangesColor the widget will use activeColor
-  final List<Color>? datesColors;
+  /// - This function will give you the date for the day that's tapped
+  final Function(DateTime date)? onDayTapped;
 
-  /// - Here you can add the active ranges colors make sure if you used this, this should have the same ranges length
-  ///
-  /// - Note if you didn't use datesColors or rangesColor the widget will use activeColor
-  final List<Color>? rangesColors;
+  /// - This function will give you the updated lest for dates
+  final Function(List<Date>)? onDatesUpdated;
 
-  /// - Here you can add the active days text colors make sure if you used this, this should have the same dates length
-  ///
-  /// - Note if you didn't use datesTextColors or rangeTextColors the widget will use the color in activeDayNumStyle
-  final List<Color>? datesTextColors;
-
-  /// - Here you can add the active ranges text colors make sure if you used this, this should have the same ranges length
-  ///
-  /// - Note if you didn't use datesTextColors or rangeTextColors the widget will use the color in activeDayNumStyle
-  final List<Color>? rangeTextColors;
+  /// - This function will give you the updated lest for dates
+  final Function(List<RangeDate>)? onRangesUpdated;
 
   /// - Here you can control the active color
   final Color activeColor;
@@ -59,6 +54,9 @@ class CustomCalendarViewer extends StatefulWidget {
 
   /// - You can control if you need to show the border for current day or not default is true
   final bool showCurrentDayBorder;
+
+  /// - If this true the header will be shown
+  final bool showHeader;
 
   /// - From here you can control the size for drop down arrow size
   final double dropArrowSize;
@@ -93,29 +91,11 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - This the duration for the years when open the years widget
   final Duration yearDuration;
 
-  /// - With these you can handel the margin left for the header
-  final double headerMarginLeft;
+  /// - The empty space that surrounds the header.
+  final EdgeInsets headerMargin;
 
-  /// - With these you can handel the margin right for the header
-  final double headerMarginRight;
-
-  /// - With these you can handel the margin top for the header
-  final double headerMarginTop;
-
-  /// - With these you can handel the margin bottom for the header
-  final double headerMarginBottom;
-
-  /// - With these you can handel the margin left for the body
-  final double daysMarginLeft;
-
-  /// - With these you can handel the margin right for the body
-  final double daysMarginRight;
-
-  /// - With these you can handel the margin top for the body
-  final double daysMarginTop;
-
-  /// - With these you can handel the margin bottom for the body
-  final double daysMarginBottom;
+  /// - The empty space that surrounds the the days body.
+  final EdgeInsets daysMargin;
 
   // - ToolTip Style
 
@@ -169,16 +149,34 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - If this true the Tooltip will be active
   final bool showTooltip;
 
+  // Add New Dates
+  /// - If this true You can add new dates or ranges to the list
+  final bool addNewDates;
+
+  /// - The color of the indicator when this not selected
+  final Color addDatesIndicatorColor;
+
+  /// - The color of the indicator when this selected
+  final Color addDatesIndicatorActiveColor;
+
+  /// - The Text style for the indicator text when this not selected
+  final TextStyle addDatesTextStyle;
+
+  /// - The Text style for the indicator text when this selected
+  final TextStyle addDatesActiveTextStyle;
+
+  /// - The empty space that surrounds the add dates widget.
+  final EdgeInsets addDatesMargin;
+
   const CustomCalendarViewer({
     super.key,
     this.duration = const Duration(milliseconds: 600),
     this.yearDuration = const Duration(milliseconds: 500),
     this.dates,
     this.ranges,
-    this.datesColors,
-    this.rangesColors,
-    this.datesTextColors,
-    this.rangeTextColors,
+    this.onDayTapped,
+    this.onDatesUpdated,
+    this.onRangesUpdated,
     this.activeColor = Colors.blue,
     this.dropArrowColor = Colors.black,
     this.movingArrowColor = Colors.black,
@@ -188,6 +186,7 @@ class CustomCalendarViewer extends StatefulWidget {
     this.daysHeaderBackground = Colors.transparent,
     this.daysBodyBackground = Colors.transparent,
     this.showCurrentDayBorder = true,
+    this.showHeader = true,
     this.dropArrowSize = 34,
     this.movingArrowSize = 16,
     this.radius = 40,
@@ -204,14 +203,10 @@ class CustomCalendarViewer extends StatefulWidget {
       fontSize: 14,
       color: Colors.white,
     ),
-    this.headerMarginLeft = 42,
-    this.headerMarginRight = 42,
-    this.headerMarginTop = 8,
-    this.headerMarginBottom = 10,
-    this.daysMarginLeft = 45,
-    this.daysMarginRight = 45,
-    this.daysMarginTop = 0,
-    this.daysMarginBottom = 0,
+    this.headerMargin =
+        const EdgeInsets.only(left: 42, right: 42, top: 8, bottom: 10),
+    this.daysMargin =
+        const EdgeInsets.only(left: 45, right: 45, top: 0, bottom: 0),
     this.local = 'en',
     this.toolTipMessage = 'Message',
     this.toolTipHeight,
@@ -225,6 +220,21 @@ class CustomCalendarViewer extends StatefulWidget {
     this.toolTipWaitDuration,
     this.toolTipShowDuration,
     this.showTooltip = false,
+    this.addNewDates = true,
+    this.addDatesIndicatorColor = Colors.grey,
+    this.addDatesIndicatorActiveColor = Colors.blue,
+    this.addDatesTextStyle = const TextStyle(
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+      fontSize: 14,
+    ),
+    this.addDatesActiveTextStyle = const TextStyle(
+      fontWeight: FontWeight.w600,
+      color: Colors.blue,
+      fontSize: 14,
+    ),
+    this.addDatesMargin =
+        const EdgeInsets.only(left: 45, right: 45, top: 10, bottom: 0),
   });
 
   @override
@@ -256,6 +266,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
   Tween<Offset> _offsetTween =
       Tween<Offset>(begin: const Offset(0.0, 0.0), end: const Offset(0.0, 0.0));
   late Animation<Offset> _offsetAnimation;
+  Date? firstRangeDate;
+  int addRange = 0;
+  int dateColor = 0;
+  int addDates = -1;
+  Color addDayColor = Colors.blue;
+  Color addDayTextColor = Colors.white;
+  Color addRangeColor = Colors.blue;
+  Color addRangeTextColor = Colors.white;
 
   @override
   void initState() {
@@ -275,18 +293,24 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           DateTime(range.start.year, range.start.month, range.start.day);
       DateTime end = DateTime(range.end.year, range.end.month, range.end.day);
 
-      if (start.isAfter(end)) {
-        DateTime switcher = start;
-        start = end;
-        end = switcher;
-      }
+      if (start == end) {
+        widget.dates!.add(
+            Date(date: start, color: range.color, textColor: range.textColor));
+        widget.ranges!.remove(range);
+      } else {
+        if (start.isAfter(end)) {
+          DateTime switcher = start;
+          start = end;
+          end = switcher;
+        }
 
-      if (date.isAfter(start) && date.isBefore(end)) {
-        return [i, 'mid'];
-      } else if (date == start) {
-        return [i, 'start'];
-      } else if (date == end) {
-        return [i, 'end'];
+        if (date.isAfter(start) && date.isBefore(end)) {
+          return [i, 'mid'];
+        } else if (date == start) {
+          return [i, 'start'];
+        } else if (date == end) {
+          return [i, 'end'];
+        }
       }
     }
     return [-1];
@@ -324,23 +348,20 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     int countYears = -31;
 
     EdgeInsets edge({
-      double left = 0,
-      double right = 0,
-      double top = 0,
-      double bottom = 0,
+      EdgeInsets padding = EdgeInsets.zero,
     }) {
       return widget.local == 'en'
           ? EdgeInsets.only(
-              left: left,
-              right: right,
-              top: top,
-              bottom: bottom,
+              left: padding.left,
+              right: padding.right,
+              top: padding.top,
+              bottom: padding.bottom,
             )
           : EdgeInsets.only(
-              left: right,
-              right: left,
-              top: top,
-              bottom: bottom,
+              left: padding.right,
+              right: padding.left,
+              top: padding.top,
+              bottom: padding.bottom,
             );
     }
 
@@ -410,12 +431,20 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         child: Container(
           alignment: Alignment.center,
           margin: inRange[0] == -1
-              ? edge(left: 1, right: 1, top: 1, bottom: 1)
+              ? edge(
+                  padding: const EdgeInsets.only(
+                      left: 1, right: 1, top: 1, bottom: 1))
               : inRange[1] == 'start'
-                  ? edge(left: 1, top: 1, bottom: 1)
+                  ? edge(
+                      padding:
+                          const EdgeInsets.only(left: 1, top: 1, bottom: 1))
                   : inRange[1] == 'end'
-                      ? edge(right: 1, top: 1, bottom: 1)
-                      : edge(top: 1, bottom: 1),
+                      ? edge(
+                          padding: const EdgeInsets.only(
+                              right: 1, top: 1, bottom: 1))
+                      : edge(
+                          padding: const EdgeInsets.only(top: 1, bottom: 1),
+                        ),
           decoration: BoxDecoration(
             borderRadius: inRange[0] == -1
                 ? BorderRadius.circular(widget.radius)
@@ -445,27 +474,151 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 : widget.dayBorder,
             color: inRange[0] == -1
                 ? (dateIndex != -1
-                    ? widget.datesColors == null
+                    ? (widget.dates == null ||
+                            widget.dates![dateIndex].color == null)
                         ? widget.activeColor
-                        : widget.datesColors![dateIndex]
+                        : widget.dates![dateIndex].color
                     : Colors.transparent)
-                : widget.rangesColors == null
+                : (widget.ranges == null ||
+                        widget.ranges![inRange[0]].color == null)
                     ? widget.activeColor
-                    : widget.rangesColors![inRange[0]],
+                    : widget.ranges![inRange[0]].color,
           ),
           child: Text(
             widget.local == 'en'
                 ? '${(index + 1) - extraDays}'
                 : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
             style: (dateIndex != -1 || inRange[0] != -1)
-                ? ((widget.datesTextColors != null)
+                ? ((widget.dates != null || widget.ranges != null)
                     ? widget.activeDayNumStyle.copyWith(
                         color: inRange[0] == -1
-                            ? widget.datesTextColors![dateIndex]
-                            : widget.rangeTextColors![inRange[0]],
+                            ? (widget.dates![dateIndex].textColor ??
+                                widget.activeDayNumStyle.color)
+                            : (widget.ranges![inRange[0]].textColor ??
+                                widget.activeDayNumStyle.color),
                       )
                     : widget.activeDayNumStyle)
                 : widget.dayNumStyle,
+          ),
+        ),
+      );
+    }
+
+    Future<dynamic> defaultShowDialog({
+      required BuildContext context,
+      EdgeInsets? padding,
+    }) {
+      return showDialog(
+        useSafeArea: true,
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.5),
+        builder: (context) => Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              height: 400,
+              margin: edge(padding: const EdgeInsets.only(left: 34, right: 34)),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: edge(padding: const EdgeInsets.all(24)),
+                    child: Column(
+                      children: [
+                        ColorPicker(
+                          pickerColor: addDates == 0
+                              ? (dateColor == 0 ? addDayColor : addDayTextColor)
+                              : (dateColor == 0
+                                  ? addRangeColor
+                                  : addRangeTextColor),
+                          enableAlpha: false,
+                          colorPickerWidth: 245,
+                          pickerAreaHeightPercent: 0.8,
+                          onColorChanged: (Color newColor) {
+                            setState(() {
+                              if (addDates == 0) {
+                                if (dateColor == 0) {
+                                  addDayColor = newColor;
+                                } else {
+                                  addDayTextColor = newColor;
+                                }
+                              } else {
+                                if (dateColor == 0) {
+                                  addRangeColor = newColor;
+                                } else {
+                                  addRangeTextColor = newColor;
+                                }
+                              }
+                            });
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            addDatesItem(
+                                text: widget.local == 'en'
+                                    ? 'Background'
+                                    : 'الخلفية',
+                                color: dateColor == 0
+                                    ? widget.addDatesIndicatorActiveColor
+                                    : widget.addDatesIndicatorColor,
+                                textStyle: dateColor == 0
+                                    ? widget.addDatesActiveTextStyle
+                                    : widget.addDatesTextStyle,
+                                onTap: () {
+                                  setState(() {
+                                    dateColor = 0;
+                                    Navigator.pop(context);
+                                    defaultShowDialog(context: context);
+                                  });
+                                }),
+                            addDatesItem(
+                                text: widget.local == 'en'
+                                    ? 'Text Color'
+                                    : 'لون النص',
+                                color: dateColor == 1
+                                    ? widget.addDatesIndicatorActiveColor
+                                    : widget.addDatesIndicatorColor,
+                                textStyle: dateColor == 1
+                                    ? widget.addDatesActiveTextStyle
+                                    : widget.addDatesTextStyle,
+                                onTap: () {
+                                  setState(() {
+                                    dateColor = 1;
+                                    Navigator.pop(context);
+                                    defaultShowDialog(context: context);
+                                  });
+                                }),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Align(
+                    alignment: widget.local == 'en'
+                        ? Alignment.topRight
+                        : Alignment.topLeft,
+                    child: IconButton(
+                      focusColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(
+                        Icons.clear,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       );
@@ -475,105 +628,104 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       children: [
         Column(
           children: [
-            Container(
-              margin: edge(
-                  left: widget.headerMarginLeft,
-                  right: widget.headerMarginRight,
-                  top: widget.headerMarginTop,
-                  bottom: widget.headerMarginBottom),
-              color: widget.headerBackground,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        widget.local == 'en' ? month : monthsName[month]!,
-                        style: widget.headerStyle,
-                      ),
-                      Padding(
-                        padding: edge(left: 10, right: 5),
-                        child: Text(
-                          widget.local == 'en'
-                              ? year
-                              : convertToArOrEnNumerals(year),
+            if (widget.showHeader)
+              Container(
+                margin: edge(
+                  padding: widget.headerMargin,
+                ),
+                color: widget.headerBackground,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          widget.local == 'en' ? month : monthsName[month]!,
                           style: widget.headerStyle,
                         ),
-                      ),
-                      InkWell(
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          setState(() {
-                            showYears = !showYears;
-                          });
-                        },
-                        child: Icon(
-                          Icons.arrow_drop_down_rounded,
-                          color: widget.dropArrowColor,
-                          size: widget.dropArrowSize,
+                        Padding(
+                          padding: edge(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 5)),
+                          child: Text(
+                            widget.local == 'en'
+                                ? year
+                                : convertToArOrEnNumerals(year),
+                            style: widget.headerStyle,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          widget.local == 'en' ? backArrow() : forwardArrow();
-                        },
-                        child: SvgPicture.asset(
-                          widget.local == 'en'
-                              ? 'assets/icons/back.svg'
-                              : 'assets/icons/forward.svg',
-                          package: 'custom_calendar_viewer',
-                          colorFilter: ColorFilter.mode(
-                              widget.movingArrowColor, BlendMode.srcIn),
-                          width: widget.movingArrowSize,
-                          height: widget.movingArrowSize,
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            setState(() {
+                              showYears = !showYears;
+                            });
+                          },
+                          child: Icon(
+                            Icons.arrow_drop_down_rounded,
+                            color: widget.dropArrowColor,
+                            size: widget.dropArrowSize,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 48,
-                      ),
-                      InkWell(
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          widget.local == 'en' ? forwardArrow() : backArrow();
-                        },
-                        child: SvgPicture.asset(
-                          widget.local == 'en'
-                              ? 'assets/icons/forward.svg'
-                              : 'assets/icons/back.svg',
-                          package: 'custom_calendar_viewer',
-                          colorFilter: ColorFilter.mode(
-                              widget.movingArrowColor, BlendMode.srcIn),
-                          width: widget.movingArrowSize,
-                          height: widget.movingArrowSize,
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            widget.local == 'en' ? backArrow() : forwardArrow();
+                          },
+                          child: SvgPicture.asset(
+                            widget.local == 'en'
+                                ? 'assets/icons/back.svg'
+                                : 'assets/icons/forward.svg',
+                            package: 'custom_calendar_viewer',
+                            colorFilter: ColorFilter.mode(
+                                widget.movingArrowColor, BlendMode.srcIn),
+                            width: widget.movingArrowSize,
+                            height: widget.movingArrowSize,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(
+                          width: 48,
+                        ),
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            widget.local == 'en' ? forwardArrow() : backArrow();
+                          },
+                          child: SvgPicture.asset(
+                            widget.local == 'en'
+                                ? 'assets/icons/forward.svg'
+                                : 'assets/icons/back.svg',
+                            package: 'custom_calendar_viewer',
+                            colorFilter: ColorFilter.mode(
+                                widget.movingArrowColor, BlendMode.srcIn),
+                            width: widget.movingArrowSize,
+                            height: widget.movingArrowSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
             Container(
               height: 40,
               color: widget.daysHeaderBackground,
               margin: edge(
-                  left: widget.daysMarginLeft,
-                  right: widget.daysMarginRight,
-                  top: widget.daysMarginTop,
-                  bottom: widget.daysMarginBottom),
+                padding: widget.daysMargin,
+              ),
               child: GridView.builder(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
@@ -603,10 +755,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
               child: Container(
                 color: widget.daysBodyBackground,
                 margin: edge(
-                    left: widget.daysMarginLeft,
-                    right: widget.daysMarginRight,
-                    top: widget.daysMarginTop,
-                    bottom: widget.daysMarginBottom),
+                  padding: widget.daysMargin,
+                ),
                 height:
                     (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
                         ? 285
@@ -620,10 +770,10 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                     if (count == 0) {
                       int dateIndex = widget.dates == null
                           ? -1
-                          : widget.dates!.indexWhere((date) =>
-                              date.year == currentDate.year &&
-                              date.month == currentDate.month &&
-                              date.day == ((index + 1) - extraDays));
+                          : widget.dates!.indexWhere((Date date) =>
+                              date.date.year == currentDate.year &&
+                              date.date.month == currentDate.month &&
+                              date.date.day == ((index + 1) - extraDays));
                       List inRange = checkInRange(DateTime(currentDate.year,
                           currentDate.month, (index + 1) - extraDays));
                       return widget.showTooltip
@@ -651,7 +801,124 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               focusColor: Colors.transparent,
-                              onTap: () {},
+                              onTap: () {
+                                setState(() {
+                                  DateTime date = DateTime(currentDate.year,
+                                      currentDate.month, index - extraDays + 1);
+                                  widget.onDayTapped!(date);
+                                  if (addDates != -1) {
+                                    int foundDate = widget.dates!.indexWhere(
+                                      (element) =>
+                                          DateTime(
+                                              element.date.year,
+                                              element.date.month,
+                                              element.date.day) ==
+                                          date,
+                                    );
+                                    int foundRange = widget.ranges!.indexWhere(
+                                        (element) => ((DateTime(
+                                                    element.start.year,
+                                                    element.start.month,
+                                                    element.start.day) ==
+                                                date) ||
+                                            (DateTime(
+                                                    element.end.year,
+                                                    element.end.month,
+                                                    element.end.day) ==
+                                                date) ||
+                                            (DateTime(
+                                                        element.start.year,
+                                                        element.start.month,
+                                                        element.start.day)
+                                                    .isBefore(date) &&
+                                                DateTime(
+                                                        element.end.year,
+                                                        element.end.month,
+                                                        element.end.day)
+                                                    .isAfter(date))));
+                                    if (addDates == 0) {
+                                      if (foundRange != -1) {
+                                        widget.ranges!
+                                            .remove(widget.ranges![foundRange]);
+                                      } else if (foundDate != -1) {
+                                        widget.dates!
+                                            .remove(widget.dates![foundDate]);
+                                      } else {
+                                        widget.dates!.add(Date(
+                                          date: date,
+                                          color: addDayColor,
+                                          textColor: addDayTextColor,
+                                        ));
+                                      }
+                                      widget.onDatesUpdated != null? widget.onDatesUpdated!(widget.dates!) : null;
+                                    } else {
+                                      if (foundDate != -1) {
+                                        widget.dates!
+                                            .remove(widget.dates![foundDate]);
+                                      }
+                                      if (foundRange != -1) {
+                                        widget.ranges!
+                                            .remove(widget.ranges![foundRange]);
+                                      } else {
+                                        if (addRange == 0) {
+                                          firstRangeDate = Date(
+                                              date: date,
+                                              color: addRangeColor,
+                                              textColor: addRangeTextColor);
+                                          addRange = 1;
+                                          widget.dates!.add(firstRangeDate!);
+                                        } else {
+                                          addRange = 0;
+                                          if (firstRangeDate!.date
+                                              .isAfter(date)) {
+                                            DateTime switcher =
+                                                firstRangeDate!.date;
+                                            firstRangeDate!.date = date;
+                                            date = switcher;
+                                          }
+                                          widget.dates!.removeWhere((element) =>
+                                              (DateTime(
+                                                      firstRangeDate!.date.year,
+                                                      firstRangeDate!
+                                                          .date.month,
+                                                      firstRangeDate!
+                                                          .date.day) ==
+                                                  element.date) ||
+                                              (DateTime(date.year, date.month,
+                                                      date.day) ==
+                                                  element.date) ||
+                                              (DateTime(
+                                                          firstRangeDate!
+                                                              .date.year,
+                                                          firstRangeDate!
+                                                              .date.month,
+                                                          firstRangeDate!
+                                                              .date.day)
+                                                      .isBefore(element.date) &&
+                                                  DateTime(date.year,
+                                                          date.month, date.day)
+                                                      .isAfter(element.date)));
+                                          widget.ranges!.removeWhere(
+                                              (element) =>
+                                                  (firstRangeDate!.date
+                                                          .isBefore(
+                                                              element.start) ||
+                                                      firstRangeDate!.date ==
+                                                          element.start) &&
+                                                  (date.isAfter(element.end) ||
+                                                      date == element.end));
+                                          widget.ranges!.add(RangeDate(
+                                              start: firstRangeDate!.date,
+                                              end: date,
+                                              color: addRangeColor,
+                                              textColor: addRangeTextColor));
+                                        }
+                                      }
+                                      widget.onRangesUpdated != null? widget.onRangesUpdated!(widget.ranges!) : null;
+                                    }
+                                  }
+                                });
+                              },
                               child: dateDayWidget(
                                 inRange,
                                 index,
@@ -668,14 +935,59 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ),
               ),
             ),
+            if (widget.addNewDates)
+              Padding(
+                padding: edge(padding: widget.addDatesMargin),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    addDatesItem(
+                        text: widget.local == 'en' ? 'Add Days' : 'أضف أيام',
+                        color: addDates == 0
+                            ? widget.addDatesIndicatorActiveColor
+                            : widget.addDatesIndicatorColor,
+                        textStyle: addDates == 0
+                            ? widget.addDatesActiveTextStyle
+                            : widget.addDatesTextStyle,
+                        onTap: () {
+                          setState(() {
+                            addDates = 0;
+                            dateColor = 0;
+                            defaultShowDialog(
+                              context: context,
+                            );
+                          });
+                        }),
+                    addDatesItem(
+                        text:
+                            widget.local == 'en' ? 'Add Ranges' : 'أضف نطاقات',
+                        color: addDates == 1
+                            ? widget.addDatesIndicatorActiveColor
+                            : widget.addDatesIndicatorColor,
+                        textStyle: addDates == 1
+                            ? widget.addDatesActiveTextStyle
+                            : widget.addDatesTextStyle,
+                        onTap: () {
+                          setState(() {
+                            addDates = 1;
+                            dateColor = 0;
+                            defaultShowDialog(
+                              context: context,
+                            );
+                          });
+                        }),
+                  ],
+                ),
+              ),
           ],
         ),
         AnimatedContainer(
           duration: widget.yearDuration,
           margin: edge(
-            left: 110,
+              padding: EdgeInsets.only(
+            left: widget.local == 'en' ? 110 : 75,
             top: 35,
-          ),
+          )),
           height: showYears ? 240 : 0,
           width: 80,
           decoration: const BoxDecoration(
@@ -694,7 +1006,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 countYears++;
                 int year = DateTime.now().year + countYears;
                 return Padding(
-                  padding: edge(top: 5, bottom: 5),
+                  padding:
+                      edge(padding: const EdgeInsets.only(top: 5, bottom: 5)),
                   child: InkWell(
                     focusColor: Colors.transparent,
                     hoverColor: Colors.transparent,
@@ -724,6 +1037,36 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           ),
         ),
       ],
+    );
+  }
+
+  InkWell addDatesItem({
+    required String text,
+    required Color color,
+    required TextStyle textStyle,
+    required Function() onTap,
+  }) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      onTap: onTap,
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 5,
+            backgroundColor: color,
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Text(
+            text,
+            style: textStyle,
+          ),
+        ],
+      ),
     );
   }
 }
