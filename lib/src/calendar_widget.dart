@@ -8,6 +8,15 @@ import 'package:intl/intl.dart';
 import 'models/date_model.dart';
 import 'models/range_model.dart';
 
+enum CustomCalendarType {
+  none,
+  date,
+  range,
+  multiDates,
+  multiRanges,
+  multiDatesAndRanges,
+}
+
 class CustomCalendarViewer extends StatefulWidget {
   /// - Here you can add specific active days dates
   /// - This  will take Date Model
@@ -27,6 +36,15 @@ class CustomCalendarViewer extends StatefulWidget {
 
   /// - This function will give you the updated lest for dates
   final Function(List<RangeDate>)? onRangesUpdated;
+
+  ///- There's 5 types to handle your calendar
+  ///   - CustomCalendarType.none this will make the user can't press on the calendar
+  ///   - CustomCalendarType.date this will make the user can add only one date
+  ///   - CustomCalendarType.range this will make the user to add only one range
+  ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
+  ///   - CustomCalendarType.multiRanges this will make the user can add multiple ranges
+  ///   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
+  final CustomCalendarType calendarType;
 
   /// - Here you can control the active color
   final Color activeColor;
@@ -150,9 +168,6 @@ class CustomCalendarViewer extends StatefulWidget {
   final bool showTooltip;
 
   // Add New Dates
-  /// - If this true You can add new dates or ranges to the list
-  final bool addNewDates;
-
   /// - The color of the indicator when this not selected
   final Color addDatesIndicatorColor;
 
@@ -177,6 +192,7 @@ class CustomCalendarViewer extends StatefulWidget {
     this.onDayTapped,
     this.onDatesUpdated,
     this.onRangesUpdated,
+    this.calendarType = CustomCalendarType.none,
     this.activeColor = Colors.blue,
     this.dropArrowColor = Colors.black,
     this.movingArrowColor = Colors.black,
@@ -220,7 +236,6 @@ class CustomCalendarViewer extends StatefulWidget {
     this.toolTipWaitDuration,
     this.toolTipShowDuration,
     this.showTooltip = false,
-    this.addNewDates = true,
     this.addDatesIndicatorColor = Colors.grey,
     this.addDatesIndicatorActiveColor = Colors.blue,
     this.addDatesTextStyle = const TextStyle(
@@ -802,72 +817,54 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                               hoverColor: Colors.transparent,
                               focusColor: Colors.transparent,
                               onTap: () {
-                                setState(() {
-                                  DateTime date = DateTime(currentDate.year,
-                                      currentDate.month, index - extraDays + 1);
-                                  widget.onDayTapped!(date);
-                                  if (addDates != -1) {
+                                if(widget.calendarType != CustomCalendarType.none){
+                                  setState(() {
+                                    DateTime date = DateTime(currentDate.year,
+                                        currentDate.month, index - extraDays + 1);
+                                    widget.onDayTapped!(date);
                                     int foundDate = widget.dates!.indexWhere(
-                                      (element) =>
-                                          DateTime(
-                                              element.date.year,
-                                              element.date.month,
-                                              element.date.day) ==
+                                          (element) =>
+                                      DateTime(
+                                          element.date.year,
+                                          element.date.month,
+                                          element.date.day) ==
                                           date,
                                     );
                                     int foundRange = widget.ranges!.indexWhere(
-                                        (element) => ((DateTime(
-                                                    element.start.year,
-                                                    element.start.month,
-                                                    element.start.day) ==
+                                            (element) => ((DateTime(
+                                            element.start.year,
+                                            element.start.month,
+                                            element.start.day) ==
+                                            date) ||
+                                            (DateTime(
+                                                element.end.year,
+                                                element.end.month,
+                                                element.end.day) ==
                                                 date) ||
                                             (DateTime(
+                                                element.start.year,
+                                                element.start.month,
+                                                element.start.day)
+                                                .isBefore(date) &&
+                                                DateTime(
                                                     element.end.year,
                                                     element.end.month,
-                                                    element.end.day) ==
-                                                date) ||
-                                            (DateTime(
-                                                        element.start.year,
-                                                        element.start.month,
-                                                        element.start.day)
-                                                    .isBefore(date) &&
-                                                DateTime(
-                                                        element.end.year,
-                                                        element.end.month,
-                                                        element.end.day)
+                                                    element.end.day)
                                                     .isAfter(date))));
-                                    if (addDates == 0) {
-                                      if (foundRange != -1) {
-                                        widget.ranges!
-                                            .remove(widget.ranges![foundRange]);
-                                      } else if (foundDate != -1) {
-                                        widget.dates!
-                                            .remove(widget.dates![foundDate]);
-                                      } else {
-                                        widget.dates!.add(Date(
-                                          date: date,
-                                          color: addDayColor,
-                                          textColor: addDayTextColor,
-                                        ));
-                                      }
-                                      widget.onDatesUpdated != null? widget.onDatesUpdated!(widget.dates!) : null;
-                                    } else {
-                                      if (foundDate != -1) {
-                                        widget.dates!
-                                            .remove(widget.dates![foundDate]);
-                                      }
-                                      if (foundRange != -1) {
-                                        widget.ranges!
-                                            .remove(widget.ranges![foundRange]);
-                                      } else {
-                                        if (addRange == 0) {
-                                          firstRangeDate = Date(
-                                              date: date,
-                                              color: addRangeColor,
-                                              textColor: addRangeTextColor);
-                                          addRange = 1;
-                                          widget.dates!.add(firstRangeDate!);
-                                        } else {
+                                    if(widget.calendarType == CustomCalendarType.date){
+                                      widget.dates!.clear();
+                                      widget.dates!.add(Date(date: date));
+                                    } else if(widget.calendarType == CustomCalendarType.range){
+                                      if (addRange == 0) {
+                                        widget.ranges!.clear();
+                                        firstRangeDate = Date(
+                                            date: date,
+                                            color: addRangeColor,
+                                            textColor: addRangeTextColor);
+                                        addRange = 1;
+                                        widget.dates!.add(firstRangeDate!);
+                                      }else{
+                                        if(firstRangeDate!.date != date){
                                           addRange = 0;
                                           if (firstRangeDate!.date
                                               .isAfter(date)) {
@@ -876,48 +873,41 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                             firstRangeDate!.date = date;
                                             date = switcher;
                                           }
-                                          widget.dates!.removeWhere((element) =>
-                                              (DateTime(
-                                                      firstRangeDate!.date.year,
-                                                      firstRangeDate!
-                                                          .date.month,
-                                                      firstRangeDate!
-                                                          .date.day) ==
-                                                  element.date) ||
-                                              (DateTime(date.year, date.month,
-                                                      date.day) ==
-                                                  element.date) ||
-                                              (DateTime(
-                                                          firstRangeDate!
-                                                              .date.year,
-                                                          firstRangeDate!
-                                                              .date.month,
-                                                          firstRangeDate!
-                                                              .date.day)
-                                                      .isBefore(element.date) &&
-                                                  DateTime(date.year,
-                                                          date.month, date.day)
-                                                      .isAfter(element.date)));
-                                          widget.ranges!.removeWhere(
-                                              (element) =>
-                                                  (firstRangeDate!.date
-                                                          .isBefore(
-                                                              element.start) ||
-                                                      firstRangeDate!.date ==
-                                                          element.start) &&
-                                                  (date.isAfter(element.end) ||
-                                                      date == element.end));
-                                          widget.ranges!.add(RangeDate(
-                                              start: firstRangeDate!.date,
-                                              end: date,
-                                              color: addRangeColor,
-                                              textColor: addRangeTextColor));
+                                          widget.dates!.remove(firstRangeDate!);
+                                          widget.ranges!.add(RangeDate(start: firstRangeDate!.date, end: date));
                                         }
                                       }
-                                      widget.onRangesUpdated != null? widget.onRangesUpdated!(widget.ranges!) : null;
+                                    }else if(widget.calendarType == CustomCalendarType.multiDates){
+                                      addDatesLogic(
+                                        foundDate: foundDate,
+                                        foundRange: foundRange,
+                                        date: date,
+                                      );
+                                    }else if(widget.calendarType == CustomCalendarType.multiRanges){
+                                      addRangesLogic(
+                                        foundDate: foundDate,
+                                        foundRange: foundRange,
+                                        date: date,
+                                      );
+                                    } else if(widget.calendarType == CustomCalendarType.multiDatesAndRanges){
+                                      if (addDates != -1) {
+                                        if (addDates == 0) {
+                                          addDatesLogic(
+                                            foundDate: foundDate,
+                                            foundRange: foundRange,
+                                            date: date,
+                                          );
+                                        } else {
+                                          addRangesLogic(
+                                            foundDate: foundDate,
+                                            foundRange: foundRange,
+                                            date: date,
+                                          );
+                                        }
+                                      }
                                     }
-                                  }
-                                });
+                                  });
+                                }
                               },
                               child: dateDayWidget(
                                 inRange,
@@ -935,7 +925,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ),
               ),
             ),
-            if (widget.addNewDates)
+            if (widget.calendarType == CustomCalendarType.multiDatesAndRanges)
               Padding(
                 padding: edge(padding: widget.addDatesMargin),
                 child: Row(
@@ -1068,5 +1058,96 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         ],
       ),
     );
+  }
+
+  void addDatesLogic({
+    required int foundDate,
+    required int foundRange,
+    required DateTime date,
+}) {
+    if (foundRange != -1) {
+      widget.ranges!
+          .remove(widget.ranges![foundRange]);
+    } else if (foundDate != -1) {
+      widget.dates!
+          .remove(widget.dates![foundDate]);
+    } else {
+      widget.dates!.add(Date(
+        date: date,
+        color: addDayColor,
+        textColor: addDayTextColor,
+      ));
+    }
+    widget.onDatesUpdated != null? widget.onDatesUpdated!(widget.dates!) : null;
+  }
+
+  void addRangesLogic({
+    required int foundDate,
+    required int foundRange,
+    required DateTime date,
+}) {
+    if (foundDate != -1) {
+      widget.dates!
+          .remove(widget.dates![foundDate]);
+    }
+    if (foundRange != -1) {
+      widget.ranges!
+          .remove(widget.ranges![foundRange]);
+    } else {
+      if (addRange == 0) {
+        firstRangeDate = Date(
+            date: date,
+            color: addRangeColor,
+            textColor: addRangeTextColor);
+        addRange = 1;
+        widget.dates!.add(firstRangeDate!);
+      } else {
+        addRange = 0;
+        if (firstRangeDate!.date
+            .isAfter(date)) {
+          DateTime switcher =
+              firstRangeDate!.date;
+          firstRangeDate!.date = date;
+          date = switcher;
+        }
+        widget.dates!.removeWhere((element) =>
+        (DateTime(
+            firstRangeDate!.date.year,
+            firstRangeDate!
+                .date.month,
+            firstRangeDate!
+                .date.day) ==
+            element.date) ||
+            (DateTime(date.year, date.month,
+                date.day) ==
+                element.date) ||
+            (DateTime(
+                firstRangeDate!
+                    .date.year,
+                firstRangeDate!
+                    .date.month,
+                firstRangeDate!
+                    .date.day)
+                .isBefore(element.date) &&
+                DateTime(date.year,
+                    date.month, date.day)
+                    .isAfter(element.date)));
+        widget.ranges!.removeWhere(
+                (element) =>
+            (firstRangeDate!.date
+                .isBefore(
+                element.start) ||
+                firstRangeDate!.date ==
+                    element.start) &&
+                (date.isAfter(element.end) ||
+                    date == element.end));
+        widget.ranges!.add(RangeDate(
+            start: firstRangeDate!.date,
+            end: date,
+            color: addRangeColor,
+            textColor: addRangeTextColor));
+      }
+    }
+    widget.onRangesUpdated != null? widget.onRangesUpdated!(widget.ranges!) : null;
   }
 }

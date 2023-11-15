@@ -43,6 +43,13 @@ dependencies:
 * You can use Tooltip to give more info about this day.
 * Now you can add multiple dates or ranges when the application is started.
 * You can handle the color for background or the text color when you add new ranges or dates.
+* You can use CustomCalendarType to handle the type of calendar.
+  - CustomCalendarType.none this will make the user can't press on the calendar.
+  - CustomCalendarType.date this will make the user can add only one date.
+  - CustomCalendarType.range this will make the user to add only one range.
+  - CustomCalendarType.multiDates this will make the user can add multiple dates.
+  - CustomCalendarType.multiRanges this will make the user can add multiple ranges.
+  - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges.
 
 ## Getting started
 
@@ -64,6 +71,7 @@ final List<RangeDate>? ranges;
 final Function(DateTime date)? onDayTapped;
 final Function(List<Date>)? onDatesUpdated;
 final Function(List<RangeDate>)? onRangesUpdated;
+final CustomCalendarType calendarType;
 final Color activeColor;
 final Color dropArrowColor;
 final Color movingArrowColor;
@@ -105,7 +113,6 @@ final TextAlign? toolTipTextAlign;
 final Duration? toolTipWaitDuration;
 final Duration? toolTipShowDuration;
 final bool showTooltip;
-final bool addNewDates;
 final Color addDatesIndicatorColor;
 final Color addDatesIndicatorActiveColor;
 final TextStyle addDatesTextStyle;
