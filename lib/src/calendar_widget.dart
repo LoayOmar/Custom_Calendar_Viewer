@@ -21,12 +21,12 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - Here you can add specific active days dates
   /// - This  will take Date Model
   /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
-  final List<Date>? dates;
+  List<Date>? dates;
 
   /// - Here you can add specific active ranges dates
   /// - This  will take RangeDate Model
   /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
-  final List<RangeDate>? ranges;
+  List<RangeDate>? ranges;
 
   /// - This function will give you the date for the day that's tapped
   final Function(DateTime date)? onDayTapped;
@@ -183,7 +183,7 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - The empty space that surrounds the add dates widget.
   final EdgeInsets addDatesMargin;
 
-  const CustomCalendarViewer({
+  CustomCalendarViewer({
     super.key,
     this.duration = const Duration(milliseconds: 600),
     this.yearDuration = const Duration(milliseconds: 500),
@@ -333,6 +333,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
 
   @override
   Widget build(BuildContext context) {
+    widget.dates = widget.dates?? [];
+    widget.ranges = widget.ranges?? [];
     int addMonth = 0;
     DateTime firstDayOfNextMonth =
         DateTime(currentDate.year, currentDate.month + (addMonth + 1), 1);
