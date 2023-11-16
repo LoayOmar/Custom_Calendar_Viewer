@@ -37,7 +37,7 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - This function will give you the updated lest for dates
   final Function(List<RangeDate>)? onRangesUpdated;
 
-  ///- There's 5 types to handle your calendar
+  ///- There's 6 types to handle your calendar
   ///   - CustomCalendarType.none this will make the user can't press on the calendar
   ///   - CustomCalendarType.date this will make the user can add only one date
   ///   - CustomCalendarType.range this will make the user to add only one range
