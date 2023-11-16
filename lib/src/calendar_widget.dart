@@ -17,16 +17,19 @@ enum CustomCalendarType {
   multiDatesAndRanges,
 }
 
+List<Date>? dates;
+List<RangeDate>? ranges;
+
 class CustomCalendarViewer extends StatefulWidget {
   /// - Here you can add specific active days dates
   /// - This  will take Date Model
   /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
-  List<Date>? dates;
+  final List<Date>? dates;
 
   /// - Here you can add specific active ranges dates
   /// - This  will take RangeDate Model
   /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
-  List<RangeDate>? ranges;
+  final List<RangeDate>? ranges;
 
   /// - This function will give you the date for the day that's tapped
   final Function(DateTime date)? onDayTapped;
@@ -183,7 +186,7 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - The empty space that surrounds the add dates widget.
   final EdgeInsets addDatesMargin;
 
-  CustomCalendarViewer({
+  const CustomCalendarViewer({
     super.key,
     this.duration = const Duration(milliseconds: 600),
     this.yearDuration = const Duration(milliseconds: 500),
@@ -297,21 +300,22 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       vsync: this,
       duration: widget.duration,
     );
-
+    dates = widget.dates ?? [];
+    ranges = widget.ranges ?? [];
     _offsetAnimation = _offsetTween.animate(_controller);
   }
 
   List checkInRange(DateTime date) {
-    for (int i = 0; i < widget.ranges!.length; i++) {
-      final range = widget.ranges![i];
+    for (int i = 0; i < ranges!.length; i++) {
+      final range = ranges![i];
       DateTime start =
           DateTime(range.start.year, range.start.month, range.start.day);
       DateTime end = DateTime(range.end.year, range.end.month, range.end.day);
 
       if (start == end) {
-        widget.dates!.add(
+        dates!.add(
             Date(date: start, color: range.color, textColor: range.textColor));
-        widget.ranges!.remove(range);
+        ranges!.remove(range);
       } else {
         if (start.isAfter(end)) {
           DateTime switcher = start;
@@ -333,8 +337,6 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
 
   @override
   Widget build(BuildContext context) {
-    widget.dates = widget.dates?? [];
-    widget.ranges = widget.ranges?? [];
     int addMonth = 0;
     DateTime firstDayOfNextMonth =
         DateTime(currentDate.year, currentDate.month + (addMonth + 1), 1);
@@ -491,27 +493,25 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 : widget.dayBorder,
             color: inRange[0] == -1
                 ? (dateIndex != -1
-                    ? (widget.dates == null ||
-                            widget.dates![dateIndex].color == null)
+                    ? (dates == null || dates![dateIndex].color == null)
                         ? widget.activeColor
-                        : widget.dates![dateIndex].color
+                        : dates![dateIndex].color
                     : Colors.transparent)
-                : (widget.ranges == null ||
-                        widget.ranges![inRange[0]].color == null)
+                : (ranges == null || ranges![inRange[0]].color == null)
                     ? widget.activeColor
-                    : widget.ranges![inRange[0]].color,
+                    : ranges![inRange[0]].color,
           ),
           child: Text(
             widget.local == 'en'
                 ? '${(index + 1) - extraDays}'
                 : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
             style: (dateIndex != -1 || inRange[0] != -1)
-                ? ((widget.dates != null || widget.ranges != null)
+                ? ((dates != null || ranges != null)
                     ? widget.activeDayNumStyle.copyWith(
                         color: inRange[0] == -1
-                            ? (widget.dates![dateIndex].textColor ??
+                            ? (dates![dateIndex].textColor ??
                                 widget.activeDayNumStyle.color)
-                            : (widget.ranges![inRange[0]].textColor ??
+                            : (ranges![inRange[0]].textColor ??
                                 widget.activeDayNumStyle.color),
                       )
                     : widget.activeDayNumStyle)
@@ -785,9 +785,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                       crossAxisCount: 7),
                   itemBuilder: (_, index) {
                     if (count == 0) {
-                      int dateIndex = widget.dates == null
+                      int dateIndex = dates == null
                           ? -1
-                          : widget.dates!.indexWhere((Date date) =>
+                          : dates!.indexWhere((Date date) =>
                               date.date.year == currentDate.year &&
                               date.date.month == currentDate.month &&
                               date.date.day == ((index + 1) - extraDays));
@@ -827,7 +827,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                         currentDate.month,
                                         index - extraDays + 1);
                                     widget.onDayTapped!(date);
-                                    int foundDate = widget.dates!.indexWhere(
+                                    int foundDate = dates!.indexWhere(
                                       (element) =>
                                           DateTime(
                                               element.date.year,
@@ -835,7 +835,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                               element.date.day) ==
                                           date,
                                     );
-                                    int foundRange = widget.ranges!.indexWhere(
+                                    int foundRange = ranges!.indexWhere(
                                         (element) => ((DateTime(
                                                     element.start.year,
                                                     element.start.month,
@@ -858,18 +858,18 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                                     .isAfter(date))));
                                     if (widget.calendarType ==
                                         CustomCalendarType.date) {
-                                      widget.dates!.clear();
-                                      widget.dates!.add(Date(date: date));
+                                      dates!.clear();
+                                      dates!.add(Date(date: date));
                                     } else if (widget.calendarType ==
                                         CustomCalendarType.range) {
                                       if (addRange == 0) {
-                                        widget.ranges!.clear();
+                                        ranges!.clear();
                                         firstRangeDate = Date(
                                             date: date,
                                             color: addRangeColor,
                                             textColor: addRangeTextColor);
                                         addRange = 1;
-                                        widget.dates!.add(firstRangeDate!);
+                                        dates!.add(firstRangeDate!);
                                       } else {
                                         if (firstRangeDate!.date != date) {
                                           addRange = 0;
@@ -880,8 +880,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                             firstRangeDate!.date = date;
                                             date = switcher;
                                           }
-                                          widget.dates!.remove(firstRangeDate!);
-                                          widget.ranges!.add(RangeDate(
+                                          dates!.remove(firstRangeDate!);
+                                          ranges!.add(RangeDate(
                                               start: firstRangeDate!.date,
                                               end: date));
                                         }
@@ -1079,18 +1079,18 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     required DateTime date,
   }) {
     if (foundRange != -1) {
-      widget.ranges!.remove(widget.ranges![foundRange]);
+      ranges!.remove(ranges![foundRange]);
     } else if (foundDate != -1) {
-      widget.dates!.remove(widget.dates![foundDate]);
+      dates!.remove(dates![foundDate]);
     } else {
-      widget.dates!.add(Date(
+      dates!.add(Date(
         date: date,
         color: addDayColor,
         textColor: addDayTextColor,
       ));
     }
     if (widget.onDatesUpdated != null) {
-      widget.onDatesUpdated!(widget.dates!);
+      widget.onDatesUpdated!(dates!);
     }
   }
 
@@ -1100,16 +1100,18 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     required DateTime date,
   }) {
     if (foundDate != -1) {
-      widget.dates!.remove(widget.dates![foundDate]);
+      dates!.remove(dates![foundDate]);
     }
     if (foundRange != -1) {
-      widget.ranges!.remove(widget.ranges![foundRange]);
+      ranges!.remove(ranges![foundRange]);
     } else {
       if (addRange == 0) {
-        firstRangeDate = Date(
-            date: date, color: addRangeColor, textColor: addRangeTextColor);
-        addRange = 1;
-        widget.dates!.add(firstRangeDate!);
+        if (foundDate == -1) {
+          firstRangeDate = Date(
+              date: date, color: addRangeColor, textColor: addRangeTextColor);
+          addRange = 1;
+          dates!.add(firstRangeDate!);
+        }
       } else {
         addRange = 0;
         if (firstRangeDate!.date.isAfter(date)) {
@@ -1117,7 +1119,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           firstRangeDate!.date = date;
           date = switcher;
         }
-        widget.dates!.removeWhere((element) =>
+        dates!.removeWhere((element) =>
             (DateTime(firstRangeDate!.date.year, firstRangeDate!.date.month,
                     firstRangeDate!.date.day) ==
                 element.date) ||
@@ -1127,19 +1129,31 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                     .isBefore(element.date) &&
                 DateTime(date.year, date.month, date.day)
                     .isAfter(element.date)));
-        widget.ranges!.removeWhere((element) =>
+        ranges!.removeWhere((element) =>
             (firstRangeDate!.date.isBefore(element.start) ||
                 firstRangeDate!.date == element.start) &&
             (date.isAfter(element.end) || date == element.end));
-        widget.ranges!.add(RangeDate(
+        if (firstRangeDate!.date != date) {
+          ranges!.add(RangeDate(
             start: firstRangeDate!.date,
             end: date,
             color: addRangeColor,
-            textColor: addRangeTextColor));
+            textColor: addRangeTextColor,
+          ));
+        } else {
+          dates!.add(Date(
+            date: date,
+            color: addRangeColor,
+            textColor: addRangeTextColor,
+          ));
+        }
       }
     }
     if (widget.onRangesUpdated != null) {
-      widget.onRangesUpdated!(widget.ranges!);
+      widget.onRangesUpdated!(ranges!);
+    }
+    if (widget.onDatesUpdated != null && addRange == 0) {
+      widget.onDatesUpdated!(dates!);
     }
   }
 }
