@@ -905,7 +905,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                               currentDate.year,
                                               currentDate.month,
                                               index - extraDays + 1);
-                                          widget.onDayTapped!(date);
+                                          if (widget.onDayTapped != null) {
+                                            widget.onDayTapped!(date);
+                                          }
                                           int foundDate = dates!.indexWhere(
                                             (element) =>
                                                 DateTime(
@@ -937,15 +939,16 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                           if (widget.calendarType ==
                                               CustomCalendarType.date) {
                                             dates!.clear();
-                                            dates!.add(Date(date: date));
+                                            dates!.add(Date(
+                                              date: date,
+                                            ));
                                           } else if (widget.calendarType ==
                                               CustomCalendarType.range) {
                                             if (addRange == 0) {
                                               ranges!.clear();
                                               firstRangeDate = Date(
-                                                  date: date,
-                                                  color: addRangeColor,
-                                                  textColor: addRangeTextColor);
+                                                date: date,
+                                              );
                                               addRange = 1;
                                               dates!.add(firstRangeDate!);
                                             } else {
@@ -1167,8 +1170,12 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     } else {
       dates!.add(Date(
         date: date,
-        color: addDayColor,
-        textColor: addDayTextColor,
+        color: widget.calendarType == CustomCalendarType.multiDates
+            ? widget.activeColor
+            : addDayColor,
+        textColor: widget.calendarType == CustomCalendarType.multiRanges
+            ? widget.activeDayNumStyle.color
+            : addDayTextColor,
       ));
     }
     if (widget.onDatesUpdated != null) {
@@ -1190,7 +1197,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       if (addRange == 0) {
         if (foundDate == -1) {
           firstRangeDate = Date(
-              date: date, color: addRangeColor, textColor: addRangeTextColor);
+            date: date,
+            color: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeColor
+                : addRangeColor,
+            textColor: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeDayNumStyle.color
+                : addRangeTextColor,
+          );
           addRange = 1;
           dates!.add(firstRangeDate!);
         }
@@ -1219,14 +1233,22 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           ranges!.add(RangeDate(
             start: firstRangeDate!.date,
             end: date,
-            color: addRangeColor,
-            textColor: addRangeTextColor,
+            color: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeColor
+                : addRangeColor,
+            textColor: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeDayNumStyle.color
+                : addRangeTextColor,
           ));
         } else {
           dates!.add(Date(
             date: date,
-            color: addRangeColor,
-            textColor: addRangeTextColor,
+            color: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeColor
+                : addRangeColor,
+            textColor: widget.calendarType == CustomCalendarType.multiRanges
+                ? widget.activeDayNumStyle.color
+                : addRangeTextColor,
           ));
         }
       }
