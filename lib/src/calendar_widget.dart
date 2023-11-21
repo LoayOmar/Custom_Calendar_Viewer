@@ -969,8 +969,10 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                                 ranges!.add(RangeDate(
                                                     start: firstRangeDate!.date,
                                                     end: date));
-                                                if (widget.onRangesUpdated != null) {
-                                                  widget.onRangesUpdated!(ranges!);
+                                                if (widget.onRangesUpdated !=
+                                                    null) {
+                                                  widget.onRangesUpdated!(
+                                                      ranges!);
                                                 }
                                               }
                                             }
@@ -1079,8 +1081,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           duration: widget.yearDuration,
           margin: edge(
               padding: EdgeInsets.only(
-            left: widget.local == 'en' ? 110 : 75,
-            top: 35,
+            left: widget.local == 'en' ? 105 : 70,
+            top: 27 + widget.headerMargin.top,
           )),
           height: showYears ? 240 : 0,
           width: 80,
