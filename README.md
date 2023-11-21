@@ -19,8 +19,8 @@
 | ![Ex 6](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/6.jpeg) | ![Ex 7](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/7.jpeg) | ![Ex 8](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/8.jpeg) | ![Ex 11](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/11.jpeg) |
 |:------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|
 
-| ![Ex 12](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/12.jpeg) | ![Ex 13](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/13.jpeg) | ![Ex 13](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/14.jpeg) |
-|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|
+| ![Ex 12](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/12.jpeg) | ![Ex 13](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/13.jpeg) | ![Ex 14](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/14.jpeg) | ![Ex 15](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/15.jpeg) |
+|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|
 
 ## Installation
 
@@ -86,14 +86,19 @@ final Function(List<Date>)? onDatesUpdated;
 /// - This function will give you the updated lest for dates
 final Function(List<RangeDate>)? onRangesUpdated;
 
-///- There's 6 types to handle your calendar
-///   - CustomCalendarType.none this will make the user can't press on the calendar
+/// - There's 6 types to handle your calendar
+///   - CustomCalendarType.view this will make the user can't press on the calendar just for view
 ///   - CustomCalendarType.date this will make the user can add only one date
 ///   - CustomCalendarType.range this will make the user to add only one range
 ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
 ///   - CustomCalendarType.multiRanges this will make the user can add multiple ranges
 ///   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
 final CustomCalendarType calendarType;
+
+/// - There's 2 style to handle your calendar
+///   - CustomCalendarStyle.withBorder this will add border around the calendar
+///   - CustomCalendarStyle.normal this will show the calendar without border
+final CustomCalendarStyle calendarStyle;
 
 /// - Here you can control the active color
 final Color activeColor;
@@ -163,6 +168,17 @@ final EdgeInsets headerMargin;
 
 /// - The empty space that surrounds the the days body.
 final EdgeInsets daysMargin;
+
+/// - The alignment for the icon default in Alignment.topLeft
+/// - The icon widget this will shown with the day number
+final Alignment iconAlignment;
+
+/// - The space around the icon
+/// - The icon widget this will shown with the day number
+final EdgeInsets iconPadding;
+
+/// - The color for the border around the calendar
+final Color calendarBorderColor;
 
 // - ToolTip Style
 

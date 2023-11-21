@@ -9,12 +9,17 @@ import 'models/date_model.dart';
 import 'models/range_model.dart';
 
 enum CustomCalendarType {
-  none,
+  view,
   date,
   range,
   multiDates,
   multiRanges,
   multiDatesAndRanges,
+}
+
+enum CustomCalendarStyle {
+  withBorder,
+  normal,
 }
 
 List<Date>? dates;
@@ -40,14 +45,19 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - This function will give you the updated lest for dates
   final Function(List<RangeDate>)? onRangesUpdated;
 
-  ///- There's 6 types to handle your calendar
-  ///   - CustomCalendarType.none this will make the user can't press on the calendar
+  /// - There's 6 types to handle your calendar
+  ///   - CustomCalendarType.view this will make the user can't press on the calendar just for view
   ///   - CustomCalendarType.date this will make the user can add only one date
   ///   - CustomCalendarType.range this will make the user to add only one range
   ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
   ///   - CustomCalendarType.multiRanges this will make the user can add multiple ranges
   ///   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
   final CustomCalendarType calendarType;
+
+  /// - There's 2 style to handle your calendar
+  ///   - CustomCalendarStyle.withBorder this will add border around the calendar
+  ///   - CustomCalendarStyle.normal this will show the calendar without border
+  final CustomCalendarStyle calendarStyle;
 
   /// - Here you can control the active color
   final Color activeColor;
@@ -117,6 +127,23 @@ class CustomCalendarViewer extends StatefulWidget {
 
   /// - The empty space that surrounds the the days body.
   final EdgeInsets daysMargin;
+
+  /// - The alignment for the icon default in Alignment.topLeft
+  /// - The icon widget this will shown with the day number
+  final Alignment iconAlignment;
+
+  /// - The space around the icon
+  /// - The icon widget this will shown with the day number
+  final EdgeInsets iconPadding;
+
+  /// - The color for the border around the calendar
+  final Color calendarBorderColor;
+
+  /// - The radius for the border around the calendar
+  final double calendarBorderRadius;
+
+  /// - The width for the border around the calendar
+  final double calendarBorderWidth;
 
   // - ToolTip Style
 
@@ -195,7 +222,8 @@ class CustomCalendarViewer extends StatefulWidget {
     this.onDayTapped,
     this.onDatesUpdated,
     this.onRangesUpdated,
-    this.calendarType = CustomCalendarType.none,
+    this.calendarType = CustomCalendarType.view,
+    this.calendarStyle = CustomCalendarStyle.withBorder,
     this.activeColor = Colors.blue,
     this.dropArrowColor = Colors.black,
     this.movingArrowColor = Colors.black,
@@ -226,6 +254,11 @@ class CustomCalendarViewer extends StatefulWidget {
         const EdgeInsets.only(left: 42, right: 42, top: 8, bottom: 10),
     this.daysMargin =
         const EdgeInsets.only(left: 45, right: 45, top: 0, bottom: 0),
+    this.iconAlignment = Alignment.topLeft,
+    this.iconPadding = EdgeInsets.zero,
+    this.calendarBorderColor = Colors.grey,
+    this.calendarBorderRadius = 10,
+    this.calendarBorderWidth = 1,
     this.local = 'en',
     this.toolTipMessage = 'Message',
     this.toolTipHeight,
@@ -447,76 +480,87 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     ) {
       return SlideTransition(
         position: _offsetAnimation,
-        child: Container(
-          alignment: Alignment.center,
-          margin: inRange[0] == -1
-              ? edge(
-                  padding: const EdgeInsets.only(
-                      left: 1, right: 1, top: 1, bottom: 1))
-              : inRange[1] == 'start'
+        child: Stack(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              margin: inRange[0] == -1
                   ? edge(
-                      padding:
-                          const EdgeInsets.only(left: 1, top: 1, bottom: 1))
-                  : inRange[1] == 'end'
+                      padding: const EdgeInsets.only(
+                          left: 2, right: 2, top: 2, bottom: 2))
+                  : inRange[1] == 'start'
                       ? edge(
-                          padding: const EdgeInsets.only(
-                              right: 1, top: 1, bottom: 1))
-                      : edge(
-                          padding: const EdgeInsets.only(top: 1, bottom: 1),
-                        ),
-          decoration: BoxDecoration(
-            borderRadius: inRange[0] == -1
-                ? BorderRadius.circular(widget.radius)
-                : inRange[1] == 'start'
-                    ? (widget.local == 'en'
-                        ? BorderRadius.only(
-                            topLeft: Radius.circular(widget.radius),
-                            bottomLeft: Radius.circular(widget.radius))
-                        : BorderRadius.only(
-                            topRight: Radius.circular(widget.radius),
-                            bottomRight: Radius.circular(widget.radius)))
-                    : inRange[1] == 'end'
+                          padding:
+                              const EdgeInsets.only(left: 1, top: 1, bottom: 1))
+                      : inRange[1] == 'end'
+                          ? edge(
+                              padding: const EdgeInsets.only(
+                                  right: 1, top: 1, bottom: 1))
+                          : edge(
+                              padding: const EdgeInsets.only(top: 1, bottom: 1),
+                            ),
+              decoration: BoxDecoration(
+                borderRadius: inRange[0] == -1
+                    ? BorderRadius.circular(widget.radius)
+                    : inRange[1] == 'start'
                         ? (widget.local == 'en'
                             ? BorderRadius.only(
-                                topRight: Radius.circular(widget.radius),
-                                bottomRight: Radius.circular(widget.radius))
-                            : BorderRadius.only(
                                 topLeft: Radius.circular(widget.radius),
-                                bottomLeft: Radius.circular(widget.radius)))
-                        : BorderRadius.zero,
-            border: (DateTime(DateTime.now().year, DateTime.now().month,
-                            DateTime.now().day) ==
-                        DateTime(currentDate.year, currentDate.month,
-                            (index + 1) - extraDays) &&
-                    widget.showCurrentDayBorder)
-                ? widget.currentDayBorder ?? Border.all(color: Colors.blue)
-                : widget.dayBorder,
-            color: inRange[0] == -1
-                ? (dateIndex != -1
-                    ? (dates == null || dates![dateIndex].color == null)
+                                bottomLeft: Radius.circular(widget.radius))
+                            : BorderRadius.only(
+                                topRight: Radius.circular(widget.radius),
+                                bottomRight: Radius.circular(widget.radius)))
+                        : inRange[1] == 'end'
+                            ? (widget.local == 'en'
+                                ? BorderRadius.only(
+                                    topRight: Radius.circular(widget.radius),
+                                    bottomRight: Radius.circular(widget.radius))
+                                : BorderRadius.only(
+                                    topLeft: Radius.circular(widget.radius),
+                                    bottomLeft: Radius.circular(widget.radius)))
+                            : BorderRadius.zero,
+                border: (DateTime(DateTime.now().year, DateTime.now().month,
+                                DateTime.now().day) ==
+                            DateTime(currentDate.year, currentDate.month,
+                                (index + 1) - extraDays) &&
+                        widget.showCurrentDayBorder)
+                    ? widget.currentDayBorder ?? Border.all(color: Colors.blue)
+                    : widget.dayBorder,
+                color: inRange[0] == -1
+                    ? (dateIndex != -1
+                        ? (dates == null || dates![dateIndex].color == null)
+                            ? widget.activeColor
+                            : dates![dateIndex].color
+                        : Colors.transparent)
+                    : (ranges == null || ranges![inRange[0]].color == null)
                         ? widget.activeColor
-                        : dates![dateIndex].color
-                    : Colors.transparent)
-                : (ranges == null || ranges![inRange[0]].color == null)
-                    ? widget.activeColor
-                    : ranges![inRange[0]].color,
-          ),
-          child: Text(
-            widget.local == 'en'
-                ? '${(index + 1) - extraDays}'
-                : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
-            style: (dateIndex != -1 || inRange[0] != -1)
-                ? ((dates != null || ranges != null)
-                    ? widget.activeDayNumStyle.copyWith(
-                        color: inRange[0] == -1
-                            ? (dates![dateIndex].textColor ??
-                                widget.activeDayNumStyle.color)
-                            : (ranges![inRange[0]].textColor ??
-                                widget.activeDayNumStyle.color),
-                      )
-                    : widget.activeDayNumStyle)
-                : widget.dayNumStyle,
-          ),
+                        : ranges![inRange[0]].color,
+              ),
+              child: Text(
+                widget.local == 'en'
+                    ? '${(index + 1) - extraDays}'
+                    : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
+                style: (dateIndex != -1 || inRange[0] != -1)
+                    ? ((dates != null || ranges != null)
+                        ? widget.activeDayNumStyle.copyWith(
+                            color: inRange[0] == -1
+                                ? (dates![dateIndex].textColor ??
+                                    widget.activeDayNumStyle.color)
+                                : (ranges![inRange[0]].textColor ??
+                                    widget.activeDayNumStyle.color),
+                          )
+                        : widget.activeDayNumStyle)
+                    : widget.dayNumStyle,
+              ),
+            ),
+
+            Align(
+              alignment: widget.iconAlignment,
+              child: inRange[0] == -1? (
+              dateIndex == -1? null : dates![dateIndex].icon
+              ) : (inRange[1] == 'start'? ranges![inRange[0]].icon : null),
+            ),
+          ],
         ),
       );
     }
@@ -738,63 +782,77 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ),
               ),
             Container(
-              height: 40,
-              color: widget.daysHeaderBackground,
               margin: edge(
                 padding: widget.daysMargin,
               ),
-              child: GridView.builder(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7),
-                itemBuilder: (_, index) => Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      widget.local == 'en' ? days[index] : arDays[index],
-                      style: widget.dayNameStyle,
-                    )),
-                itemCount: 7,
-              ),
-            ),
-            GestureDetector(
-              onHorizontalDragEnd: (DragEndDetails details) {
-                if (details.primaryVelocity != null) {
-                  if (details.primaryVelocity! > 0) {
-                    // User dragged from left to right
-                    widget.local == 'en' ? backArrow() : forwardArrow();
-                  } else {
-                    // User dragged from right to left
-                    widget.local == 'en' ? forwardArrow() : backArrow();
-                  }
-                }
-              },
-              child: Container(
-                color: widget.daysBodyBackground,
-                margin: edge(
-                  padding: widget.daysMargin,
+              decoration: widget.calendarStyle == CustomCalendarStyle.withBorder? BoxDecoration(
+                borderRadius: BorderRadius.circular(widget.calendarBorderRadius),
+                border: Border.all(
+                  color: widget.calendarBorderColor,
+                  width: widget.calendarBorderWidth,
                 ),
-                height:
-                    (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
-                        ? 285
-                        : 240,
-                child: GridView.builder(
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7),
-                  itemBuilder: (_, index) {
-                    if (count == 0) {
-                      int dateIndex = dates == null
-                          ? -1
-                          : dates!.indexWhere((Date date) =>
-                              date.date.year == currentDate.year &&
-                              date.date.month == currentDate.month &&
-                              date.date.day == ((index + 1) - extraDays));
-                      List inRange = checkInRange(DateTime(currentDate.year,
-                          currentDate.month, (index + 1) - extraDays));
-                      return widget.showTooltip
-                          ? Tooltip(
+              ) : null,
+              child: Column(
+                children: [
+                  Container(
+                    height: 40,
+                    color: widget.daysHeaderBackground,
+                    padding: widget.calendarStyle == CustomCalendarStyle.withBorder? edge(padding: const EdgeInsets.all(3)) : edge(padding: EdgeInsets.zero),
+                    child: GridView.builder(
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 7),
+                      itemBuilder: (_, index) => Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            widget.local == 'en' ? days[index] : arDays[index],
+                            style: widget.dayNameStyle,
+                          )),
+                      itemCount: 7,
+                    ),
+                  ),
+                  if(widget.calendarStyle == CustomCalendarStyle.withBorder)
+                    Divider(
+                      color: widget.calendarBorderColor,
+                      thickness: widget.calendarBorderWidth,
+                    ),
+                  GestureDetector(
+                    onHorizontalDragEnd: (DragEndDetails details) {
+                      if (details.primaryVelocity != null) {
+                        if (details.primaryVelocity! > 0) {
+                          // User dragged from left to right
+                          widget.local == 'en' ? backArrow() : forwardArrow();
+                        } else {
+                          // User dragged from right to left
+                          widget.local == 'en' ? forwardArrow() : backArrow();
+                        }
+                      }
+                    },
+                    child: Container(
+                      color: widget.daysBodyBackground,
+                      padding: widget.calendarStyle == CustomCalendarStyle.withBorder? edge(padding: const EdgeInsets.all(3)) : edge(padding: EdgeInsets.zero),
+                      height:
+                      (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
+                          ? 285
+                          : 240,
+                      child: GridView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7),
+                        itemBuilder: (_, index) {
+                          if (count == 0) {
+                            int dateIndex = dates == null
+                                ? -1
+                                : dates!.indexWhere((Date date) =>
+                            date.date.year == currentDate.year &&
+                                date.date.month == currentDate.month &&
+                                date.date.day == ((index + 1) - extraDays));
+                            List inRange = checkInRange(DateTime(currentDate.year,
+                                currentDate.month, (index + 1) - extraDays));
+                            return widget.showTooltip
+                                ? Tooltip(
                               message: widget.toolTipMessage,
                               height: widget.toolTipHeight,
                               padding: widget.toolTipPadding,
@@ -813,14 +871,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                 dateIndex,
                               ),
                             )
-                          : InkWell(
+                                : InkWell(
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               focusColor: Colors.transparent,
                               onTap: () {
                                 if (widget.calendarType !=
-                                    CustomCalendarType.none) {
+                                    CustomCalendarType.view) {
                                   setState(() {
                                     DateTime date = DateTime(
                                         currentDate.year,
@@ -828,33 +886,33 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                         index - extraDays + 1);
                                     widget.onDayTapped!(date);
                                     int foundDate = dates!.indexWhere(
-                                      (element) =>
-                                          DateTime(
-                                              element.date.year,
-                                              element.date.month,
-                                              element.date.day) ==
+                                          (element) =>
+                                      DateTime(
+                                          element.date.year,
+                                          element.date.month,
+                                          element.date.day) ==
                                           date,
                                     );
                                     int foundRange = ranges!.indexWhere(
-                                        (element) => ((DateTime(
-                                                    element.start.year,
-                                                    element.start.month,
-                                                    element.start.day) ==
+                                            (element) => ((DateTime(
+                                            element.start.year,
+                                            element.start.month,
+                                            element.start.day) ==
+                                            date) ||
+                                            (DateTime(
+                                                element.end.year,
+                                                element.end.month,
+                                                element.end.day) ==
                                                 date) ||
                                             (DateTime(
+                                                element.start.year,
+                                                element.start.month,
+                                                element.start.day)
+                                                .isBefore(date) &&
+                                                DateTime(
                                                     element.end.year,
                                                     element.end.month,
-                                                    element.end.day) ==
-                                                date) ||
-                                            (DateTime(
-                                                        element.start.year,
-                                                        element.start.month,
-                                                        element.start.day)
-                                                    .isBefore(date) &&
-                                                DateTime(
-                                                        element.end.year,
-                                                        element.end.month,
-                                                        element.end.day)
+                                                    element.end.day)
                                                     .isAfter(date))));
                                     if (widget.calendarType ==
                                         CustomCalendarType.date) {
@@ -929,13 +987,16 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                 dateIndex,
                               ),
                             );
-                    } else {
-                      count--;
-                      return const SizedBox();
-                    }
-                  },
-                  itemCount: daysInMonth + extraDays,
-                ),
+                          } else {
+                            count--;
+                            return const SizedBox();
+                          }
+                        },
+                        itemCount: daysInMonth + extraDays,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             if (widget.calendarType == CustomCalendarType.multiDatesAndRanges)

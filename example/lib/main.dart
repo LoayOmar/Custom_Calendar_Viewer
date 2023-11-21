@@ -59,14 +59,27 @@ class _MyHomePageState extends State<MyHomePage> {
       date: DateTime(2023, 11, 5),
       color: Colors.white,
       textColor: Colors.red,
+      icon: const Icon(
+        Icons.add,
+        size: 15,
+      ),
     ),
     Date(
       date: DateTime(2023, 11, 18),
       color: Colors.blue,
       textColor: Colors.amber,
+      icon: const Icon(
+        Icons.add,
+        size: 15,
+        color: Colors.red,
+      ),
     ),
     Date(
       date: DateTime(2023, 11, 22),
+      icon: const Icon(
+        Icons.add,
+        size: 15,
+      ),
     ),
   ];
   List<RangeDate> ranges = [
@@ -74,11 +87,20 @@ class _MyHomePageState extends State<MyHomePage> {
       start: DateTime(2023, 11, 12),
       end: DateTime(2023, 11, 15),
       color: Colors.red,
+      icon: const Icon(
+        Icons.add,
+        size: 15,
+      ),
     ),
     RangeDate(
       start: DateTime(2023, 11, 24),
       end: DateTime(2023, 11, 27),
       color: Colors.amber,
+      icon: const Icon(
+        Icons.add,
+        size: 15,
+        color: Colors.red,
+      ),
     ),
     RangeDate(
       start: DateTime(2023, 11, 30),
