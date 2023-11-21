@@ -942,6 +942,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                             dates!.add(Date(
                                               date: date,
                                             ));
+                                            if (widget.onDatesUpdated != null) {
+                                              widget.onDatesUpdated!(dates!);
+                                            }
                                           } else if (widget.calendarType ==
                                               CustomCalendarType.range) {
                                             if (addRange == 0) {
@@ -966,6 +969,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                                 ranges!.add(RangeDate(
                                                     start: firstRangeDate!.date,
                                                     end: date));
+                                                if (widget.onRangesUpdated != null) {
+                                                  widget.onRangesUpdated!(ranges!);
+                                                }
                                               }
                                             }
                                           } else if (widget.calendarType ==
