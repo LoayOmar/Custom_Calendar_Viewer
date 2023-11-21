@@ -77,6 +77,10 @@ final List<Date>? dates;
 /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
 final List<RangeDate>? ranges;
 
+/// - If you need to put specific color for each day name
+/// - Make sure the list should have 7 colors when used
+final List<String>? daysNameColors;
+
 /// - This function will give you the date for the day that's tapped
 final Function(DateTime date)? onDayTapped;
 

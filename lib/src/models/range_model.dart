@@ -8,5 +8,9 @@ class RangeDate {
   Widget? icon;
 
   RangeDate(
-      {required this.start, required this.end, this.color, this.textColor, this.icon});
+      {required this.start,
+      required this.end,
+      this.color,
+      this.textColor,
+      this.icon});
 }

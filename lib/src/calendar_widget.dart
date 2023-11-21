@@ -36,6 +36,10 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - if you leave the color or text color null this will take the colors from active color for background and active day num style for text color
   final List<RangeDate>? ranges;
 
+  /// - If you need to put specific color for each day name
+  /// - Make sure the list should have 7 colors when used
+  final List<Color>? daysNameColors;
+
   /// - This function will give you the date for the day that's tapped
   final Function(DateTime date)? onDayTapped;
 
@@ -219,6 +223,7 @@ class CustomCalendarViewer extends StatefulWidget {
     this.yearDuration = const Duration(milliseconds: 500),
     this.dates,
     this.ranges,
+    this.daysNameColors,
     this.onDayTapped,
     this.onDatesUpdated,
     this.onRangesUpdated,
@@ -553,12 +558,11 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                     : widget.dayNumStyle,
               ),
             ),
-
             Align(
               alignment: widget.iconAlignment,
-              child: inRange[0] == -1? (
-              dateIndex == -1? null : dates![dateIndex].icon
-              ) : (inRange[1] == 'start'? ranges![inRange[0]].icon : null),
+              child: inRange[0] == -1
+                  ? (dateIndex == -1 ? null : dates![dateIndex].icon)
+                  : (inRange[1] == 'start' ? ranges![inRange[0]].icon : null),
             ),
           ],
         ),
@@ -785,34 +789,45 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
               margin: edge(
                 padding: widget.daysMargin,
               ),
-              decoration: widget.calendarStyle == CustomCalendarStyle.withBorder? BoxDecoration(
-                borderRadius: BorderRadius.circular(widget.calendarBorderRadius),
-                border: Border.all(
-                  color: widget.calendarBorderColor,
-                  width: widget.calendarBorderWidth,
-                ),
-              ) : null,
+              decoration: widget.calendarStyle == CustomCalendarStyle.withBorder
+                  ? BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(widget.calendarBorderRadius),
+                      border: Border.all(
+                        color: widget.calendarBorderColor,
+                        width: widget.calendarBorderWidth,
+                      ),
+                    )
+                  : null,
               child: Column(
                 children: [
                   Container(
                     height: 40,
                     color: widget.daysHeaderBackground,
-                    padding: widget.calendarStyle == CustomCalendarStyle.withBorder? edge(padding: const EdgeInsets.all(3)) : edge(padding: EdgeInsets.zero),
+                    padding:
+                        widget.calendarStyle == CustomCalendarStyle.withBorder
+                            ? edge(padding: const EdgeInsets.all(3))
+                            : edge(padding: EdgeInsets.zero),
                     child: GridView.builder(
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7),
                       itemBuilder: (_, index) => Align(
                           alignment: Alignment.center,
                           child: Text(
                             widget.local == 'en' ? days[index] : arDays[index],
-                            style: widget.dayNameStyle,
+                            style: widget.daysNameColors != null
+                                ? widget.dayNameStyle.copyWith(
+                                    color: widget.daysNameColors![index],
+                                  )
+                                : widget.dayNameStyle,
                           )),
                       itemCount: 7,
                     ),
                   ),
-                  if(widget.calendarStyle == CustomCalendarStyle.withBorder)
+                  if (widget.calendarStyle == CustomCalendarStyle.withBorder)
                     Divider(
                       color: widget.calendarBorderColor,
                       thickness: widget.calendarBorderWidth,
@@ -831,162 +846,168 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                     },
                     child: Container(
                       color: widget.daysBodyBackground,
-                      padding: widget.calendarStyle == CustomCalendarStyle.withBorder? edge(padding: const EdgeInsets.all(3)) : edge(padding: EdgeInsets.zero),
-                      height:
-                      (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
+                      padding:
+                          widget.calendarStyle == CustomCalendarStyle.withBorder
+                              ? edge(padding: const EdgeInsets.all(3))
+                              : edge(padding: EdgeInsets.zero),
+                      height: (extraDays == 6 ||
+                              (extraDays == 5 && daysInMonth == 31))
                           ? 285
                           : 240,
                       child: GridView.builder(
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 7),
                         itemBuilder: (_, index) {
                           if (count == 0) {
                             int dateIndex = dates == null
                                 ? -1
                                 : dates!.indexWhere((Date date) =>
-                            date.date.year == currentDate.year &&
-                                date.date.month == currentDate.month &&
-                                date.date.day == ((index + 1) - extraDays));
-                            List inRange = checkInRange(DateTime(currentDate.year,
-                                currentDate.month, (index + 1) - extraDays));
+                                    date.date.year == currentDate.year &&
+                                    date.date.month == currentDate.month &&
+                                    date.date.day == ((index + 1) - extraDays));
+                            List inRange = checkInRange(DateTime(
+                                currentDate.year,
+                                currentDate.month,
+                                (index + 1) - extraDays));
                             return widget.showTooltip
                                 ? Tooltip(
-                              message: widget.toolTipMessage,
-                              height: widget.toolTipHeight,
-                              padding: widget.toolTipPadding,
-                              margin: widget.toolTipMargin,
-                              triggerMode: widget.toolTipTriggerMode,
-                              preferBelow: widget.toolTipPreferBelow,
-                              decoration: widget.toolTipDecoration,
-                              textStyle: widget.toolTipTextStyle,
-                              textAlign: widget.toolTipTextAlign,
-                              waitDuration: widget.toolTipWaitDuration,
-                              showDuration: widget.toolTipShowDuration,
-                              child: dateDayWidget(
-                                inRange,
-                                index,
-                                extraDays,
-                                dateIndex,
-                              ),
-                            )
+                                    message: widget.toolTipMessage,
+                                    height: widget.toolTipHeight,
+                                    padding: widget.toolTipPadding,
+                                    margin: widget.toolTipMargin,
+                                    triggerMode: widget.toolTipTriggerMode,
+                                    preferBelow: widget.toolTipPreferBelow,
+                                    decoration: widget.toolTipDecoration,
+                                    textStyle: widget.toolTipTextStyle,
+                                    textAlign: widget.toolTipTextAlign,
+                                    waitDuration: widget.toolTipWaitDuration,
+                                    showDuration: widget.toolTipShowDuration,
+                                    child: dateDayWidget(
+                                      inRange,
+                                      index,
+                                      extraDays,
+                                      dateIndex,
+                                    ),
+                                  )
                                 : InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              onTap: () {
-                                if (widget.calendarType !=
-                                    CustomCalendarType.view) {
-                                  setState(() {
-                                    DateTime date = DateTime(
-                                        currentDate.year,
-                                        currentDate.month,
-                                        index - extraDays + 1);
-                                    widget.onDayTapped!(date);
-                                    int foundDate = dates!.indexWhere(
-                                          (element) =>
-                                      DateTime(
-                                          element.date.year,
-                                          element.date.month,
-                                          element.date.day) ==
-                                          date,
-                                    );
-                                    int foundRange = ranges!.indexWhere(
-                                            (element) => ((DateTime(
-                                            element.start.year,
-                                            element.start.month,
-                                            element.start.day) ==
-                                            date) ||
-                                            (DateTime(
-                                                element.end.year,
-                                                element.end.month,
-                                                element.end.day) ==
-                                                date) ||
-                                            (DateTime(
-                                                element.start.year,
-                                                element.start.month,
-                                                element.start.day)
-                                                .isBefore(date) &&
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    onTap: () {
+                                      if (widget.calendarType !=
+                                          CustomCalendarType.view) {
+                                        setState(() {
+                                          DateTime date = DateTime(
+                                              currentDate.year,
+                                              currentDate.month,
+                                              index - extraDays + 1);
+                                          widget.onDayTapped!(date);
+                                          int foundDate = dates!.indexWhere(
+                                            (element) =>
                                                 DateTime(
-                                                    element.end.year,
-                                                    element.end.month,
-                                                    element.end.day)
-                                                    .isAfter(date))));
-                                    if (widget.calendarType ==
-                                        CustomCalendarType.date) {
-                                      dates!.clear();
-                                      dates!.add(Date(date: date));
-                                    } else if (widget.calendarType ==
-                                        CustomCalendarType.range) {
-                                      if (addRange == 0) {
-                                        ranges!.clear();
-                                        firstRangeDate = Date(
-                                            date: date,
-                                            color: addRangeColor,
-                                            textColor: addRangeTextColor);
-                                        addRange = 1;
-                                        dates!.add(firstRangeDate!);
-                                      } else {
-                                        if (firstRangeDate!.date != date) {
-                                          addRange = 0;
-                                          if (firstRangeDate!.date
-                                              .isAfter(date)) {
-                                            DateTime switcher =
-                                                firstRangeDate!.date;
-                                            firstRangeDate!.date = date;
-                                            date = switcher;
+                                                    element.date.year,
+                                                    element.date.month,
+                                                    element.date.day) ==
+                                                date,
+                                          );
+                                          int foundRange = ranges!.indexWhere((element) => ((DateTime(
+                                                      element.start.year,
+                                                      element.start.month,
+                                                      element.start.day) ==
+                                                  date) ||
+                                              (DateTime(
+                                                      element.end.year,
+                                                      element.end.month,
+                                                      element.end.day) ==
+                                                  date) ||
+                                              (DateTime(
+                                                          element.start.year,
+                                                          element.start.month,
+                                                          element.start.day)
+                                                      .isBefore(date) &&
+                                                  DateTime(
+                                                          element.end.year,
+                                                          element.end.month,
+                                                          element.end.day)
+                                                      .isAfter(date))));
+                                          if (widget.calendarType ==
+                                              CustomCalendarType.date) {
+                                            dates!.clear();
+                                            dates!.add(Date(date: date));
+                                          } else if (widget.calendarType ==
+                                              CustomCalendarType.range) {
+                                            if (addRange == 0) {
+                                              ranges!.clear();
+                                              firstRangeDate = Date(
+                                                  date: date,
+                                                  color: addRangeColor,
+                                                  textColor: addRangeTextColor);
+                                              addRange = 1;
+                                              dates!.add(firstRangeDate!);
+                                            } else {
+                                              if (firstRangeDate!.date !=
+                                                  date) {
+                                                addRange = 0;
+                                                if (firstRangeDate!.date
+                                                    .isAfter(date)) {
+                                                  DateTime switcher =
+                                                      firstRangeDate!.date;
+                                                  firstRangeDate!.date = date;
+                                                  date = switcher;
+                                                }
+                                                dates!.remove(firstRangeDate!);
+                                                ranges!.add(RangeDate(
+                                                    start: firstRangeDate!.date,
+                                                    end: date));
+                                              }
+                                            }
+                                          } else if (widget.calendarType ==
+                                              CustomCalendarType.multiDates) {
+                                            addDatesLogic(
+                                              foundDate: foundDate,
+                                              foundRange: foundRange,
+                                              date: date,
+                                            );
+                                          } else if (widget.calendarType ==
+                                              CustomCalendarType.multiRanges) {
+                                            addRangesLogic(
+                                              foundDate: foundDate,
+                                              foundRange: foundRange,
+                                              date: date,
+                                            );
+                                          } else if (widget.calendarType ==
+                                              CustomCalendarType
+                                                  .multiDatesAndRanges) {
+                                            if (addDates != -1) {
+                                              if (addDates == 0) {
+                                                addDatesLogic(
+                                                  foundDate: foundDate,
+                                                  foundRange: foundRange,
+                                                  date: date,
+                                                );
+                                              } else {
+                                                addRangesLogic(
+                                                  foundDate: foundDate,
+                                                  foundRange: foundRange,
+                                                  date: date,
+                                                );
+                                              }
+                                            }
                                           }
-                                          dates!.remove(firstRangeDate!);
-                                          ranges!.add(RangeDate(
-                                              start: firstRangeDate!.date,
-                                              end: date));
-                                        }
+                                        });
                                       }
-                                    } else if (widget.calendarType ==
-                                        CustomCalendarType.multiDates) {
-                                      addDatesLogic(
-                                        foundDate: foundDate,
-                                        foundRange: foundRange,
-                                        date: date,
-                                      );
-                                    } else if (widget.calendarType ==
-                                        CustomCalendarType.multiRanges) {
-                                      addRangesLogic(
-                                        foundDate: foundDate,
-                                        foundRange: foundRange,
-                                        date: date,
-                                      );
-                                    } else if (widget.calendarType ==
-                                        CustomCalendarType
-                                            .multiDatesAndRanges) {
-                                      if (addDates != -1) {
-                                        if (addDates == 0) {
-                                          addDatesLogic(
-                                            foundDate: foundDate,
-                                            foundRange: foundRange,
-                                            date: date,
-                                          );
-                                        } else {
-                                          addRangesLogic(
-                                            foundDate: foundDate,
-                                            foundRange: foundRange,
-                                            date: date,
-                                          );
-                                        }
-                                      }
-                                    }
-                                  });
-                                }
-                              },
-                              child: dateDayWidget(
-                                inRange,
-                                index,
-                                extraDays,
-                                dateIndex,
-                              ),
-                            );
+                                    },
+                                    child: dateDayWidget(
+                                      inRange,
+                                      index,
+                                      extraDays,
+                                      dateIndex,
+                                    ),
+                                  );
                           } else {
                             count--;
                             return const SizedBox();
