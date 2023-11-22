@@ -184,6 +184,18 @@ final EdgeInsets iconPadding;
 /// - The color for the border around the calendar
 final Color calendarBorderColor;
 
+/// - The radius for the border around the calendar
+final double calendarBorderRadius;
+
+/// - The width for the border around the calendar
+final double calendarBorderWidth;
+
+/// - If you need to close dates before specific date just enter this here
+final DateTime closeDateBefore;
+
+/// - Here if you need to put specific color for closed date
+final Color closedDatesColor;
+
 // - ToolTip Style
 
 /// - The text to display in the tooltip. Only one of message.

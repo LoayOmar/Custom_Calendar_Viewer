@@ -119,6 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
             dates: dates,
             ranges: ranges,
             calendarType: CustomCalendarType.multiDatesAndRanges,
+            closeDateBefore: DateTime.now(),
+            closedDatesColor: Colors.grey.withOpacity(0.7),
             onDayTapped: (date) {
               // Handel your code here.
               print(date);
