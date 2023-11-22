@@ -190,6 +190,15 @@ final double calendarBorderRadius;
 /// - The width for the border around the calendar
 final double calendarBorderWidth;
 
+/// - If You need to show border between days name and the days number
+final bool showBorderAfterDayHeader;
+
+/// - If this true the header will be shown only with Month and Year
+final bool showMonthAndYearHeader;
+
+/// - Put the alignment for Header
+final MainAxisAlignment headerAlignment;
+
 /// - If you need to close dates before specific date just enter this here
 final DateTime closeDateBefore;
 

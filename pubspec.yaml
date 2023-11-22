@@ -1,6 +1,6 @@
 name: custom_calendar_viewer
 description: Amazing package help you to view your plans or important dates in calendar.
-version: 0.2.1
+version: 0.2.2
 homepage: https://github.com/LoayOmar/Custom_Calendar_Viewer
 
 environment:

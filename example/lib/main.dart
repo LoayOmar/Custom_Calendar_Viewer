@@ -119,8 +119,13 @@ class _MyHomePageState extends State<MyHomePage> {
             dates: dates,
             ranges: ranges,
             calendarType: CustomCalendarType.multiDatesAndRanges,
+            calendarStyle: CustomCalendarStyle.normal,
             closeDateBefore: DateTime.now(),
             closedDatesColor: Colors.grey.withOpacity(0.7),
+            //showHeader: false,
+            //showMonthAndYearHeader: true,
+            showBorderAfterDayHeader: true,
+            //headerAlignment: MainAxisAlignment.center,
             onDayTapped: (date) {
               // Handel your code here.
               print(date);
