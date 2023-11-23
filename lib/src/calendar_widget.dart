@@ -1168,6 +1168,11 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     void Function() backArrow,
     void Function() forwardArrow,
   ) {
+    if(widget.dates != null){
+      setState(() {
+        currentDate = widget.dates![0].date;
+      });
+    }
     return Container(
       margin: edge(
         padding: widget.daysMargin,
