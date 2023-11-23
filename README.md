@@ -97,6 +97,7 @@ final Function(List<RangeDate>)? onRangesUpdated;
 ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
 ///   - CustomCalendarType.multiRanges this will make the user can add multiple ranges
 ///   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
+///   - CustomCalendarType.monthsAndYears this will make you can show calendar with only years and months
 final CustomCalendarType calendarType;
 
 /// - There's 2 style to handle your calendar
@@ -150,10 +151,10 @@ final TextStyle headerStyle;
 final TextStyle dayNameStyle;
 
 /// - From these you can handel the style for day number text in the calendar
-final TextStyle dayNumStyle;
+final TextStyle inActiveStyle;
 
 /// - From these you can handel the style for active day number text in the calendar
-final TextStyle activeDayNumStyle;
+final TextStyle activeStyle;
 
 /// - From these you can handel the style for years text in the dropDown
 final TextStyle dropDownYearsStyle;

@@ -15,6 +15,7 @@ enum CustomCalendarType {
   multiDates,
   multiRanges,
   multiDatesAndRanges,
+  monthsAndYears
 }
 
 enum CustomCalendarStyle {
@@ -56,6 +57,7 @@ class CustomCalendarViewer extends StatefulWidget {
   ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
   ///   - CustomCalendarType.multiRanges this will make the user can add multiple ranges
   ///   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
+  ///   - CustomCalendarType.monthsAndYears this will make you can show calendar with only years and months
   final CustomCalendarType calendarType;
 
   /// - There's 2 style to handle your calendar
@@ -118,10 +120,10 @@ class CustomCalendarViewer extends StatefulWidget {
   final TextStyle dayNameStyle;
 
   /// - From these you can handel the style for day number text in the calendar
-  final TextStyle dayNumStyle;
+  final TextStyle inActiveStyle;
 
   /// - From these you can handel the style for active day number text in the calendar
-  final TextStyle activeDayNumStyle;
+  final TextStyle activeStyle;
 
   /// - From these you can handel the style for years text in the dropDown
   final TextStyle dropDownYearsStyle;
@@ -268,9 +270,9 @@ class CustomCalendarViewer extends StatefulWidget {
         fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black),
     this.dayNameStyle = const TextStyle(
         fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black),
-    this.dayNumStyle = const TextStyle(
+    this.inActiveStyle = const TextStyle(
         fontWeight: FontWeight.w400, fontSize: 14, color: Colors.black),
-    this.activeDayNumStyle = const TextStyle(
+    this.activeStyle = const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 14,
       color: Colors.white,
@@ -336,6 +338,20 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     'November': 'نوفمبر',
     'December': 'ديسمبر',
   };
+  final List<String> monthsEn = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   bool showYears = false;
 
   late AnimationController _controller;
@@ -361,36 +377,6 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     dates = widget.dates ?? [];
     ranges = widget.ranges ?? [];
     _offsetAnimation = _offsetTween.animate(_controller);
-  }
-
-  List checkInRange(DateTime date) {
-    for (int i = 0; i < ranges!.length; i++) {
-      final range = ranges![i];
-      DateTime start =
-          DateTime(range.start.year, range.start.month, range.start.day);
-      DateTime end = DateTime(range.end.year, range.end.month, range.end.day);
-
-      if (start == end) {
-        dates!.add(
-            Date(date: start, color: range.color, textColor: range.textColor));
-        ranges!.remove(range);
-      } else {
-        if (start.isAfter(end)) {
-          DateTime switcher = start;
-          start = end;
-          end = switcher;
-        }
-
-        if (date.isAfter(start) && date.isBefore(end)) {
-          return [i, 'mid'];
-        } else if (date == start) {
-          return [i, 'start'];
-        } else if (date == end) {
-          return [i, 'end'];
-        }
-      }
-    }
-    return [-1];
   }
 
   @override
@@ -424,62 +410,19 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     int count = extraDays;
     int countYears = -31;
 
-    EdgeInsets edge({
-      EdgeInsets padding = EdgeInsets.zero,
-    }) {
-      return widget.local == 'en'
-          ? EdgeInsets.only(
-              left: padding.left,
-              right: padding.right,
-              top: padding.top,
-              bottom: padding.bottom,
-            )
-          : EdgeInsets.only(
-              left: padding.right,
-              right: padding.left,
-              top: padding.top,
-              bottom: padding.bottom,
-            );
-    }
-
-    String convertToArOrEnNumerals(String input) {
-      const englishDigits = '0123456789';
-      const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
-
-      if (widget.local == 'ar') {
-        for (int i = 0; i < englishDigits.length; i++) {
-          input = input.replaceAll(englishDigits[i], arabicDigits[i]);
-        }
-      } else {
-        for (int i = 0; i < englishDigits.length; i++) {
-          input = input.replaceAll(arabicDigits[i], englishDigits[i]);
-        }
-      }
-
-      return input;
-    }
-
-    void triggerAnimation({required bool toRight}) {
-      if (toRight) {
-        _offsetTween = Tween<Offset>(
-            begin: const Offset(0.0, 0.0), end: const Offset(9.0, 0.0));
-        _offsetAnimation = _offsetTween.animate(_controller);
-        _controller.forward().then((value) => _controller.reset());
-      } else {
-        _offsetTween = Tween<Offset>(
-            begin: const Offset(0.0, 0.0), end: const Offset(-9.0, 0.0));
-        _offsetAnimation = _offsetTween.animate(_controller);
-        _controller.forward().then((value) => _controller.reset());
-      }
-    }
-
     void backArrow() {
       setState(() {
         triggerAnimation(toRight: widget.local == 'en' ? true : false);
         Future.delayed(widget.duration).then((value) {
           setState(() {
-            addMonth--;
-            currentDate = DateTime(currentDate.year, currentDate.month - 1, 1);
+            if (widget.calendarType == CustomCalendarType.monthsAndYears) {
+              currentDate =
+                  DateTime(currentDate.year - 1, currentDate.month, 1);
+            } else {
+              addMonth--;
+              currentDate =
+                  DateTime(currentDate.year, currentDate.month - 1, 1);
+            }
           });
         });
       });
@@ -490,128 +433,17 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         triggerAnimation(toRight: widget.local == 'en' ? false : true);
         Future.delayed(widget.duration).then((value) {
           setState(() {
-            addMonth++;
-            currentDate = DateTime(currentDate.year, currentDate.month + 1, 1);
+            if (widget.calendarType == CustomCalendarType.monthsAndYears) {
+              currentDate =
+                  DateTime(currentDate.year + 1, currentDate.month, 1);
+            } else {
+              addMonth++;
+              currentDate =
+                  DateTime(currentDate.year, currentDate.month + 1, 1);
+            }
           });
         });
       });
-    }
-
-    Widget dateDayWidget(
-      List<dynamic> inRange,
-      int index,
-      int extraDays,
-      int dateIndex,
-    ) {
-      return SlideTransition(
-        position: _offsetAnimation,
-        child: Stack(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              margin: inRange[0] == -1
-                  ? edge(
-                      padding: const EdgeInsets.only(
-                          left: 2, right: 2, top: 2, bottom: 2))
-                  : inRange[1] == 'start'
-                      ? edge(
-                          padding:
-                              const EdgeInsets.only(left: 1, top: 1, bottom: 1))
-                      : inRange[1] == 'end'
-                          ? edge(
-                              padding: const EdgeInsets.only(
-                                  right: 1, top: 1, bottom: 1))
-                          : edge(
-                              padding: const EdgeInsets.only(top: 1, bottom: 1),
-                            ),
-              decoration: BoxDecoration(
-                borderRadius: inRange[0] == -1
-                    ? BorderRadius.circular(widget.radius)
-                    : inRange[1] == 'start'
-                        ? (widget.local == 'en'
-                            ? BorderRadius.only(
-                                topLeft: Radius.circular(widget.radius),
-                                bottomLeft: Radius.circular(widget.radius))
-                            : BorderRadius.only(
-                                topRight: Radius.circular(widget.radius),
-                                bottomRight: Radius.circular(widget.radius)))
-                        : inRange[1] == 'end'
-                            ? (widget.local == 'en'
-                                ? BorderRadius.only(
-                                    topRight: Radius.circular(widget.radius),
-                                    bottomRight: Radius.circular(widget.radius))
-                                : BorderRadius.only(
-                                    topLeft: Radius.circular(widget.radius),
-                                    bottomLeft: Radius.circular(widget.radius)))
-                            : BorderRadius.zero,
-                border: (DateTime(DateTime.now().year, DateTime.now().month,
-                                DateTime.now().day) ==
-                            DateTime(currentDate.year, currentDate.month,
-                                (index + 1) - extraDays) &&
-                        widget.showCurrentDayBorder)
-                    ? widget.currentDayBorder ?? Border.all(color: Colors.blue)
-                    : widget.dayBorder,
-                color: inRange[0] == -1
-                    ? (dateIndex != -1
-                        ? (dates == null || dates![dateIndex].color == null)
-                            ? widget.activeColor
-                            : dates![dateIndex].color
-                        : Colors.transparent)
-                    : (ranges == null || ranges![inRange[0]].color == null)
-                        ? widget.activeColor
-                        : ranges![inRange[0]].color,
-              ),
-              child: Text(
-                widget.local == 'en'
-                    ? '${(index + 1) - extraDays}'
-                    : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
-                style: ((dateIndex != -1 || inRange[0] != -1)
-                    ? ((dates != null || ranges != null)
-                        ? widget.activeDayNumStyle.copyWith(
-                            color: widget.closeDateBefore == null
-                                ? (inRange[0] == -1
-                                    ? (dates![dateIndex].textColor ??
-                                        widget.activeDayNumStyle.color)
-                                    : (ranges![inRange[0]].textColor ??
-                                        widget.activeDayNumStyle.color))
-                                : (DateTime(
-                                            widget.closeDateBefore!.year,
-                                            widget.closeDateBefore!.month,
-                                            widget.closeDateBefore!.day)
-                                        .isAfter(DateTime(
-                                            currentDate.year,
-                                            currentDate.month,
-                                            (index + 1) - extraDays))
-                                    ? widget.closedDatesColor
-                                    : (inRange[0] == -1
-                                        ? (dates![dateIndex].textColor ??
-                                            widget.activeDayNumStyle.color)
-                                        : (ranges![inRange[0]].textColor ??
-                                            widget.activeDayNumStyle.color))),
-                          )
-                        : widget.activeDayNumStyle)
-                    : widget.closeDateBefore == null
-                        ? widget.dayNumStyle
-                        : (DateTime(
-                                    widget.closeDateBefore!.year,
-                                    widget.closeDateBefore!.month,
-                                    widget.closeDateBefore!.day)
-                                .isAfter(DateTime(currentDate.year,
-                                    currentDate.month, (index + 1) - extraDays))
-                            ? widget.dayNumStyle
-                                .copyWith(color: widget.closedDatesColor)
-                            : widget.dayNumStyle)),
-              ),
-            ),
-            Align(
-              alignment: widget.iconAlignment,
-              child: inRange[0] == -1
-                  ? (dateIndex == -1 ? null : dates![dateIndex].icon)
-                  : (inRange[1] == 'start' ? ranges![inRange[0]].icon : null),
-            ),
-          ],
-        ),
-      );
     }
 
     void onDateTaped(int index) {
@@ -705,529 +537,23 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       }
     }
 
-    Future<dynamic> defaultShowDialog({
-      required BuildContext context,
-      EdgeInsets? padding,
-    }) {
-      return showDialog(
-        useSafeArea: true,
-        context: context,
-        barrierColor: Colors.black.withOpacity(0.5),
-        builder: (context) => Material(
-          color: Colors.transparent,
-          child: Center(
-            child: Container(
-              height: 400,
-              margin: edge(padding: const EdgeInsets.only(left: 34, right: 34)),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: edge(padding: const EdgeInsets.all(24)),
-                    child: Column(
-                      children: [
-                        ColorPicker(
-                          pickerColor: addDates == 0
-                              ? (dateColor == 0 ? addDayColor : addDayTextColor)
-                              : (dateColor == 0
-                                  ? addRangeColor
-                                  : addRangeTextColor),
-                          enableAlpha: false,
-                          colorPickerWidth: 245,
-                          pickerAreaHeightPercent: 0.8,
-                          onColorChanged: (Color newColor) {
-                            setState(() {
-                              if (addDates == 0) {
-                                if (dateColor == 0) {
-                                  addDayColor = newColor;
-                                } else {
-                                  addDayTextColor = newColor;
-                                }
-                              } else {
-                                if (dateColor == 0) {
-                                  addRangeColor = newColor;
-                                } else {
-                                  addRangeTextColor = newColor;
-                                }
-                              }
-                            });
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            addDatesItem(
-                                text: widget.local == 'en'
-                                    ? 'Background'
-                                    : 'الخلفية',
-                                color: dateColor == 0
-                                    ? widget.addDatesIndicatorActiveColor
-                                    : widget.addDatesIndicatorColor,
-                                textStyle: dateColor == 0
-                                    ? widget.addDatesActiveTextStyle
-                                    : widget.addDatesTextStyle,
-                                onTap: () {
-                                  setState(() {
-                                    dateColor = 0;
-                                    Navigator.pop(context);
-                                    defaultShowDialog(context: context);
-                                  });
-                                }),
-                            addDatesItem(
-                                text: widget.local == 'en'
-                                    ? 'Text Color'
-                                    : 'لون النص',
-                                color: dateColor == 1
-                                    ? widget.addDatesIndicatorActiveColor
-                                    : widget.addDatesIndicatorColor,
-                                textStyle: dateColor == 1
-                                    ? widget.addDatesActiveTextStyle
-                                    : widget.addDatesTextStyle,
-                                onTap: () {
-                                  setState(() {
-                                    dateColor = 1;
-                                    Navigator.pop(context);
-                                    defaultShowDialog(context: context);
-                                  });
-                                }),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: widget.local == 'en'
-                        ? Alignment.topRight
-                        : Alignment.topLeft,
-                    child: IconButton(
-                      focusColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.clear,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
     return Stack(
       children: [
         Column(
           children: [
             if (widget.showHeader || widget.showMonthAndYearHeader)
-              Container(
-                margin: edge(
-                  padding: widget.headerMargin,
-                ),
-                color: widget.headerBackground,
-                child: Row(
-                  mainAxisAlignment: widget.headerAlignment,
-                  children: [
-                    if (widget.showHeader || widget.showMonthAndYearHeader)
-                      Row(
-                        children: [
-                          Text(
-                            widget.local == 'en' ? month : monthsName[month]!,
-                            style: widget.headerStyle,
-                          ),
-                          Padding(
-                            padding: edge(
-                                padding:
-                                    const EdgeInsets.only(left: 10, right: 5)),
-                            child: Text(
-                              widget.local == 'en'
-                                  ? year
-                                  : convertToArOrEnNumerals(year),
-                              style: widget.headerStyle,
-                            ),
-                          ),
-                          if (widget.showHeader)
-                            InkWell(
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () {
-                                setState(() {
-                                  showYears = !showYears;
-                                });
-                              },
-                              child: Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: widget.dropArrowColor,
-                                size: widget.dropArrowSize,
-                              ),
-                            ),
-                        ],
-                      ),
-                    if (widget.showHeader)
-                      Row(
-                        children: [
-                          InkWell(
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              widget.local == 'en'
-                                  ? backArrow()
-                                  : forwardArrow();
-                            },
-                            child: SvgPicture.asset(
-                              widget.local == 'en'
-                                  ? 'assets/icons/back.svg'
-                                  : 'assets/icons/forward.svg',
-                              package: 'custom_calendar_viewer',
-                              colorFilter: ColorFilter.mode(
-                                  widget.movingArrowColor, BlendMode.srcIn),
-                              width: widget.movingArrowSize,
-                              height: widget.movingArrowSize,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 48,
-                          ),
-                          InkWell(
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
-                            onTap: () {
-                              widget.local == 'en'
-                                  ? forwardArrow()
-                                  : backArrow();
-                            },
-                            child: SvgPicture.asset(
-                              widget.local == 'en'
-                                  ? 'assets/icons/forward.svg'
-                                  : 'assets/icons/back.svg',
-                              package: 'custom_calendar_viewer',
-                              colorFilter: ColorFilter.mode(
-                                  widget.movingArrowColor, BlendMode.srcIn),
-                              width: widget.movingArrowSize,
-                              height: widget.movingArrowSize,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            Container(
-              margin: edge(
-                padding: widget.daysMargin,
-              ),
-              decoration: widget.calendarStyle == CustomCalendarStyle.withBorder
-                  ? BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(widget.calendarBorderRadius),
-                      border: Border.all(
-                        color: widget.calendarBorderColor,
-                        width: widget.calendarBorderWidth,
-                      ),
-                    )
-                  : null,
-              child: Column(
-                children: [
-                  Container(
-                    height: 40,
-                    color: widget.daysHeaderBackground,
-                    padding:
-                        widget.calendarStyle == CustomCalendarStyle.withBorder
-                            ? edge(padding: const EdgeInsets.all(3))
-                            : edge(padding: EdgeInsets.zero),
-                    child: GridView.builder(
-                      padding: EdgeInsets.zero,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 7),
-                      itemBuilder: (_, index) => Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            widget.local == 'en' ? days[index] : arDays[index],
-                            style: widget.daysNameColors != null
-                                ? widget.dayNameStyle.copyWith(
-                                    color: widget.daysNameColors![index],
-                                  )
-                                : widget.dayNameStyle,
-                          )),
-                      itemCount: 7,
-                    ),
-                  ),
-                  if (widget.calendarStyle == CustomCalendarStyle.withBorder ||
-                      widget.showBorderAfterDayHeader)
-                    Padding(
-                      padding: edge(
-                          padding: EdgeInsets.only(
-                              bottom: widget.showBorderAfterDayHeader ? 3 : 0)),
-                      child: Divider(
-                        color: widget.calendarBorderColor,
-                        thickness: widget.calendarBorderWidth,
-                      ),
-                    ),
-                  GestureDetector(
-                    onHorizontalDragEnd: (DragEndDetails details) {
-                      if (details.primaryVelocity != null) {
-                        if (details.primaryVelocity! > 0) {
-                          // User dragged from left to right
-                          widget.local == 'en' ? backArrow() : forwardArrow();
-                        } else {
-                          // User dragged from right to left
-                          widget.local == 'en' ? forwardArrow() : backArrow();
-                        }
-                      }
-                    },
-                    child: Container(
-                      color: widget.daysBodyBackground,
-                      padding:
-                          widget.calendarStyle == CustomCalendarStyle.withBorder
-                              ? edge(padding: const EdgeInsets.all(3))
-                              : edge(padding: EdgeInsets.zero),
-                      height: (extraDays == 6 ||
-                              (extraDays == 5 && daysInMonth == 31))
-                          ? 285
-                          : 240,
-                      child: GridView.builder(
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 7),
-                        itemBuilder: (_, index) {
-                          if (count == 0) {
-                            int dateIndex = dates == null
-                                ? -1
-                                : dates!.indexWhere((Date date) =>
-                                    date.date.year == currentDate.year &&
-                                    date.date.month == currentDate.month &&
-                                    date.date.day == ((index + 1) - extraDays));
-                            List inRange = checkInRange(DateTime(
-                                currentDate.year,
-                                currentDate.month,
-                                (index + 1) - extraDays));
-                            return widget.showTooltip
-                                ? Tooltip(
-                                    message: widget.toolTipMessage,
-                                    height: widget.toolTipHeight,
-                                    padding: widget.toolTipPadding,
-                                    margin: widget.toolTipMargin,
-                                    triggerMode: widget.toolTipTriggerMode,
-                                    preferBelow: widget.toolTipPreferBelow,
-                                    decoration: widget.toolTipDecoration,
-                                    textStyle: widget.toolTipTextStyle,
-                                    textAlign: widget.toolTipTextAlign,
-                                    waitDuration: widget.toolTipWaitDuration,
-                                    showDuration: widget.toolTipShowDuration,
-                                    child: dateDayWidget(
-                                      inRange,
-                                      index,
-                                      extraDays,
-                                      dateIndex,
-                                    ),
-                                  )
-                                : InkWell(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    onTap: () {
-                                      if (widget.closeDateBefore != null) {
-                                        if (DateTime(
-                                                    widget
-                                                        .closeDateBefore!.year,
-                                                    widget
-                                                        .closeDateBefore!.month,
-                                                    widget.closeDateBefore!.day)
-                                                .isBefore(DateTime(
-                                                    currentDate.year,
-                                                    currentDate.month,
-                                                    (index + 1) - extraDays)) ||
-                                            DateTime(
-                                                    widget
-                                                        .closeDateBefore!.year,
-                                                    widget
-                                                        .closeDateBefore!.month,
-                                                    widget.closeDateBefore!
-                                                        .day) ==
-                                                DateTime(
-                                                    currentDate.year,
-                                                    currentDate.month,
-                                                    (index + 1) - extraDays)) {
-                                          onDateTaped(index);
-                                        }
-                                      } else {
-                                        onDateTaped(index);
-                                      }
-                                    },
-                                    child: dateDayWidget(
-                                      inRange,
-                                      index,
-                                      extraDays,
-                                      dateIndex,
-                                    ),
-                                  );
-                          } else {
-                            count--;
-                            return const SizedBox();
-                          }
-                        },
-                        itemCount: daysInMonth + extraDays,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+              buildHeader(month, year, backArrow, forwardArrow),
+            if (widget.calendarType == CustomCalendarType.monthsAndYears)
+              buildMonthAndYearsType(backArrow, forwardArrow),
+            if (widget.calendarType != CustomCalendarType.monthsAndYears)
+              buildCalendar(backArrow, forwardArrow, extraDays, daysInMonth,
+                  count, onDateTaped),
             if (widget.calendarType == CustomCalendarType.multiDatesAndRanges)
-              Padding(
-                padding: edge(padding: widget.addDatesMargin),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    addDatesItem(
-                        text: widget.local == 'en' ? 'Add Days' : 'أضف أيام',
-                        color: addDates == 0
-                            ? widget.addDatesIndicatorActiveColor
-                            : widget.addDatesIndicatorColor,
-                        textStyle: addDates == 0
-                            ? widget.addDatesActiveTextStyle
-                            : widget.addDatesTextStyle,
-                        onTap: () {
-                          setState(() {
-                            addDates = 0;
-                            dateColor = 0;
-                            defaultShowDialog(
-                              context: context,
-                            );
-                          });
-                        }),
-                    addDatesItem(
-                        text:
-                            widget.local == 'en' ? 'Add Ranges' : 'أضف نطاقات',
-                        color: addDates == 1
-                            ? widget.addDatesIndicatorActiveColor
-                            : widget.addDatesIndicatorColor,
-                        textStyle: addDates == 1
-                            ? widget.addDatesActiveTextStyle
-                            : widget.addDatesTextStyle,
-                        onTap: () {
-                          setState(() {
-                            addDates = 1;
-                            dateColor = 0;
-                            defaultShowDialog(
-                              context: context,
-                            );
-                          });
-                        }),
-                  ],
-                ),
-              ),
+              buildAddMultiDatesAndRanges(context),
           ],
         ),
-        AnimatedContainer(
-          duration: widget.yearDuration,
-          margin: edge(
-              padding: EdgeInsets.only(
-            left: widget.local == 'en'
-                ? widget.headerMargin.left + 70
-                : widget.headerMargin.left + 35,
-            top: 30 + widget.headerMargin.top,
-          )),
-          height: showYears ? 240 : 0,
-          width: 80,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                offset: Offset(1, 0),
-                blurRadius: 5,
-                color: Colors.black12,
-              )
-            ],
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: List.generate(61, (index) {
-                countYears++;
-                int year = DateTime.now().year + countYears;
-                return Padding(
-                  padding:
-                      edge(padding: const EdgeInsets.only(top: 5, bottom: 5)),
-                  child: InkWell(
-                    focusColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () {
-                      setState(() {
-                        currentDate = DateTime(year, currentDate.month, 1);
-                        showYears = false;
-                      });
-                    },
-                    child: Text(
-                      widget.local == 'en'
-                          ? '${DateTime.now().year + countYears}'
-                          : convertToArOrEnNumerals(
-                              '${DateTime.now().year + countYears}'),
-                      style: ((DateTime.now().year + countYears) ==
-                              currentDate.year)
-                          ? widget.dropDownYearsStyle
-                              .copyWith(color: Colors.blue)
-                          : widget.dropDownYearsStyle,
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
-        ),
+        buildYearsCard(countYears),
       ],
-    );
-  }
-
-  InkWell addDatesItem({
-    required String text,
-    required Color color,
-    required TextStyle textStyle,
-    required Function() onTap,
-  }) {
-    return InkWell(
-      splashColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      onTap: onTap,
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 5,
-            backgroundColor: color,
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            text,
-            style: textStyle,
-          ),
-        ],
-      ),
     );
   }
 
@@ -1247,7 +573,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             ? widget.activeColor
             : addDayColor,
         textColor: widget.calendarType == CustomCalendarType.multiRanges
-            ? widget.activeDayNumStyle.color
+            ? widget.activeStyle.color
             : addDayTextColor,
       ));
     }
@@ -1275,7 +601,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ? widget.activeColor
                 : addRangeColor,
             textColor: widget.calendarType == CustomCalendarType.multiRanges
-                ? widget.activeDayNumStyle.color
+                ? widget.activeStyle.color
                 : addRangeTextColor,
           );
           addRange = 1;
@@ -1310,7 +636,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ? widget.activeColor
                 : addRangeColor,
             textColor: widget.calendarType == CustomCalendarType.multiRanges
-                ? widget.activeDayNumStyle.color
+                ? widget.activeStyle.color
                 : addRangeTextColor,
           ));
         } else {
@@ -1320,7 +646,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                 ? widget.activeColor
                 : addRangeColor,
             textColor: widget.calendarType == CustomCalendarType.multiRanges
-                ? widget.activeDayNumStyle.color
+                ? widget.activeStyle.color
                 : addRangeTextColor,
           ));
         }
@@ -1332,5 +658,832 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     if (widget.onDatesUpdated != null && addRange == 0) {
       widget.onDatesUpdated!(dates!);
     }
+  }
+
+  void triggerAnimation({required bool toRight}) {
+    if (toRight) {
+      _offsetTween = Tween<Offset>(
+          begin: const Offset(0.0, 0.0), end: const Offset(9.0, 0.0));
+      _offsetAnimation = _offsetTween.animate(_controller);
+      _controller.forward().then((value) => _controller.reset());
+    } else {
+      _offsetTween = Tween<Offset>(
+          begin: const Offset(0.0, 0.0), end: const Offset(-9.0, 0.0));
+      _offsetAnimation = _offsetTween.animate(_controller);
+      _controller.forward().then((value) => _controller.reset());
+    }
+  }
+
+  List checkInRange(DateTime date) {
+    for (int i = 0; i < ranges!.length; i++) {
+      final range = ranges![i];
+      DateTime start =
+          DateTime(range.start.year, range.start.month, range.start.day);
+      DateTime end = DateTime(range.end.year, range.end.month, range.end.day);
+
+      if (start == end) {
+        dates!.add(
+            Date(date: start, color: range.color, textColor: range.textColor));
+        ranges!.remove(range);
+      } else {
+        if (start.isAfter(end)) {
+          DateTime switcher = start;
+          start = end;
+          end = switcher;
+        }
+
+        if (date.isAfter(start) && date.isBefore(end)) {
+          return [i, 'mid'];
+        } else if (date == start) {
+          return [i, 'start'];
+        } else if (date == end) {
+          return [i, 'end'];
+        }
+      }
+    }
+    return [-1];
+  }
+
+  EdgeInsets edge({
+    EdgeInsets padding = EdgeInsets.zero,
+  }) {
+    return widget.local == 'en'
+        ? EdgeInsets.only(
+            left: padding.left,
+            right: padding.right,
+            top: padding.top,
+            bottom: padding.bottom,
+          )
+        : EdgeInsets.only(
+            left: padding.right,
+            right: padding.left,
+            top: padding.top,
+            bottom: padding.bottom,
+          );
+  }
+
+  String convertToArOrEnNumerals(String input) {
+    const englishDigits = '0123456789';
+    const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+
+    if (widget.local == 'ar') {
+      for (int i = 0; i < englishDigits.length; i++) {
+        input = input.replaceAll(englishDigits[i], arabicDigits[i]);
+      }
+    } else {
+      for (int i = 0; i < englishDigits.length; i++) {
+        input = input.replaceAll(arabicDigits[i], englishDigits[i]);
+      }
+    }
+
+    return input;
+  }
+
+  //***************************************************************************************************************************************************************************************************************************************************************************************************//
+
+  Widget buildHeader(
+    String month,
+    String year,
+    void Function() backArrow,
+    void Function() forwardArrow,
+  ) {
+    return Container(
+      margin: edge(
+        padding: widget.headerMargin,
+      ),
+      color: widget.headerBackground,
+      child: Row(
+        mainAxisAlignment: widget.headerAlignment,
+        children: [
+          if (widget.showHeader || widget.showMonthAndYearHeader)
+            Row(
+              children: [
+                Text(
+                  widget.local == 'en' ? month : monthsName[month]!,
+                  style: widget.headerStyle,
+                ),
+                Padding(
+                  padding:
+                      edge(padding: const EdgeInsets.only(left: 10, right: 5)),
+                  child: Text(
+                    widget.local == 'en' ? year : convertToArOrEnNumerals(year),
+                    style: widget.headerStyle,
+                  ),
+                ),
+                if (widget.showHeader)
+                  InkWell(
+                    focusColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () {
+                      setState(() {
+                        showYears = !showYears;
+                      });
+                    },
+                    child: Icon(
+                      Icons.arrow_drop_down_rounded,
+                      color: widget.dropArrowColor,
+                      size: widget.dropArrowSize,
+                    ),
+                  ),
+              ],
+            ),
+          if (widget.showHeader)
+            Row(
+              children: [
+                InkWell(
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    widget.local == 'en' ? backArrow() : forwardArrow();
+                  },
+                  child: SvgPicture.asset(
+                    widget.local == 'en'
+                        ? 'assets/icons/back.svg'
+                        : 'assets/icons/forward.svg',
+                    package: 'custom_calendar_viewer',
+                    colorFilter: ColorFilter.mode(
+                        widget.movingArrowColor, BlendMode.srcIn),
+                    width: widget.movingArrowSize,
+                    height: widget.movingArrowSize,
+                  ),
+                ),
+                const SizedBox(
+                  width: 48,
+                ),
+                InkWell(
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    widget.local == 'en' ? forwardArrow() : backArrow();
+                  },
+                  child: SvgPicture.asset(
+                    widget.local == 'en'
+                        ? 'assets/icons/forward.svg'
+                        : 'assets/icons/back.svg',
+                    package: 'custom_calendar_viewer',
+                    colorFilter: ColorFilter.mode(
+                        widget.movingArrowColor, BlendMode.srcIn),
+                    width: widget.movingArrowSize,
+                    height: widget.movingArrowSize,
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCalendar(
+    void Function() backArrow,
+    void Function() forwardArrow,
+    int extraDays,
+    int daysInMonth,
+    int count,
+    void Function(int index) onDateTaped,
+  ) {
+    return Container(
+      margin: edge(
+        padding: widget.daysMargin,
+      ),
+      decoration: widget.calendarStyle == CustomCalendarStyle.withBorder
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(widget.calendarBorderRadius),
+              border: Border.all(
+                color: widget.calendarBorderColor,
+                width: widget.calendarBorderWidth,
+              ),
+            )
+          : null,
+      child: Column(
+        children: [
+          buildDayNames(),
+          if (widget.calendarStyle == CustomCalendarStyle.withBorder ||
+              widget.showBorderAfterDayHeader)
+            Padding(
+              padding: edge(
+                  padding: EdgeInsets.only(
+                      bottom: widget.showBorderAfterDayHeader ? 3 : 0)),
+              child: Divider(
+                color: widget.calendarBorderColor,
+                thickness: widget.calendarBorderWidth,
+              ),
+            ),
+          buildDayNumbers(backArrow, forwardArrow, extraDays, daysInMonth,
+              count, onDateTaped),
+        ],
+      ),
+    );
+  }
+
+  Widget buildDayNumbers(
+    void Function() backArrow,
+    void Function() forwardArrow,
+    int extraDays,
+    int daysInMonth,
+    int count,
+    void Function(int index) onDateTaped,
+  ) {
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) {
+        if (details.primaryVelocity != null) {
+          if (details.primaryVelocity! > 0) {
+            // User dragged from left to right
+            widget.local == 'en' ? backArrow() : forwardArrow();
+          } else {
+            // User dragged from right to left
+            widget.local == 'en' ? forwardArrow() : backArrow();
+          }
+        }
+      },
+      child: Container(
+        color: widget.daysBodyBackground,
+        padding: widget.calendarStyle == CustomCalendarStyle.withBorder
+            ? edge(padding: const EdgeInsets.all(3))
+            : edge(padding: EdgeInsets.zero),
+        height: (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
+            ? 285
+            : 240,
+        child: GridView.builder(
+          padding: EdgeInsets.zero,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7),
+          itemBuilder: (_, index) {
+            if (count == 0) {
+              int dateIndex = dates == null
+                  ? -1
+                  : dates!.indexWhere((Date date) =>
+                      date.date.year == currentDate.year &&
+                      date.date.month == currentDate.month &&
+                      date.date.day == ((index + 1) - extraDays));
+              List inRange = checkInRange(DateTime(currentDate.year,
+                  currentDate.month, (index + 1) - extraDays));
+              return widget.showTooltip
+                  ? Tooltip(
+                      message: widget.toolTipMessage,
+                      height: widget.toolTipHeight,
+                      padding: widget.toolTipPadding,
+                      margin: widget.toolTipMargin,
+                      triggerMode: widget.toolTipTriggerMode,
+                      preferBelow: widget.toolTipPreferBelow,
+                      decoration: widget.toolTipDecoration,
+                      textStyle: widget.toolTipTextStyle,
+                      textAlign: widget.toolTipTextAlign,
+                      waitDuration: widget.toolTipWaitDuration,
+                      showDuration: widget.toolTipShowDuration,
+                      child: dateDayWidget(
+                        inRange,
+                        index,
+                        extraDays,
+                        dateIndex,
+                      ),
+                    )
+                  : InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      onTap: () {
+                        if (widget.closeDateBefore != null) {
+                          if (DateTime(
+                                      widget.closeDateBefore!.year,
+                                      widget.closeDateBefore!.month,
+                                      widget.closeDateBefore!.day)
+                                  .isBefore(DateTime(
+                                      currentDate.year,
+                                      currentDate.month,
+                                      (index + 1) - extraDays)) ||
+                              DateTime(
+                                      widget.closeDateBefore!.year,
+                                      widget.closeDateBefore!.month,
+                                      widget.closeDateBefore!.day) ==
+                                  DateTime(currentDate.year, currentDate.month,
+                                      (index + 1) - extraDays)) {
+                            onDateTaped(index);
+                          }
+                        } else {
+                          onDateTaped(index);
+                        }
+                      },
+                      child: dateDayWidget(
+                        inRange,
+                        index,
+                        extraDays,
+                        dateIndex,
+                      ),
+                    );
+            } else {
+              count--;
+              return const SizedBox();
+            }
+          },
+          itemCount: daysInMonth + extraDays,
+        ),
+      ),
+    );
+  }
+
+  Widget buildDayNames() {
+    return Container(
+      height: 40,
+      color: widget.daysHeaderBackground,
+      padding: widget.calendarStyle == CustomCalendarStyle.withBorder
+          ? edge(padding: const EdgeInsets.all(3))
+          : edge(padding: EdgeInsets.zero),
+      child: GridView.builder(
+        padding: EdgeInsets.zero,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+        itemBuilder: (_, index) => Align(
+            alignment: Alignment.center,
+            child: Text(
+              widget.local == 'en' ? days[index] : arDays[index],
+              style: widget.daysNameColors != null
+                  ? widget.dayNameStyle.copyWith(
+                      color: widget.daysNameColors![index],
+                    )
+                  : widget.dayNameStyle,
+            )),
+        itemCount: 7,
+      ),
+    );
+  }
+
+  Widget addDatesItem({
+    required String text,
+    required Color color,
+    required TextStyle textStyle,
+    required Function() onTap,
+  }) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      onTap: onTap,
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 5,
+            backgroundColor: color,
+          ),
+          const SizedBox(
+            width: 8,
+          ),
+          Text(
+            text,
+            style: textStyle,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget dateDayWidget(
+    List<dynamic> inRange,
+    int index,
+    int extraDays,
+    int dateIndex,
+  ) {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            margin: inRange[0] == -1
+                ? edge(
+                    padding: const EdgeInsets.only(
+                        left: 2, right: 2, top: 2, bottom: 2))
+                : inRange[1] == 'start'
+                    ? edge(
+                        padding:
+                            const EdgeInsets.only(left: 1, top: 1, bottom: 1))
+                    : inRange[1] == 'end'
+                        ? edge(
+                            padding: const EdgeInsets.only(
+                                right: 1, top: 1, bottom: 1))
+                        : edge(
+                            padding: const EdgeInsets.only(top: 1, bottom: 1),
+                          ),
+            decoration: BoxDecoration(
+              borderRadius: inRange[0] == -1
+                  ? BorderRadius.circular(widget.radius)
+                  : inRange[1] == 'start'
+                      ? (widget.local == 'en'
+                          ? BorderRadius.only(
+                              topLeft: Radius.circular(widget.radius),
+                              bottomLeft: Radius.circular(widget.radius))
+                          : BorderRadius.only(
+                              topRight: Radius.circular(widget.radius),
+                              bottomRight: Radius.circular(widget.radius)))
+                      : inRange[1] == 'end'
+                          ? (widget.local == 'en'
+                              ? BorderRadius.only(
+                                  topRight: Radius.circular(widget.radius),
+                                  bottomRight: Radius.circular(widget.radius))
+                              : BorderRadius.only(
+                                  topLeft: Radius.circular(widget.radius),
+                                  bottomLeft: Radius.circular(widget.radius)))
+                          : BorderRadius.zero,
+              border: (DateTime(DateTime.now().year, DateTime.now().month,
+                              DateTime.now().day) ==
+                          DateTime(currentDate.year, currentDate.month,
+                              (index + 1) - extraDays) &&
+                      widget.showCurrentDayBorder)
+                  ? widget.currentDayBorder ?? Border.all(color: Colors.blue)
+                  : widget.dayBorder,
+              color: inRange[0] == -1
+                  ? (dateIndex != -1
+                      ? (dates == null || dates![dateIndex].color == null)
+                          ? widget.activeColor
+                          : dates![dateIndex].color
+                      : Colors.transparent)
+                  : (ranges == null || ranges![inRange[0]].color == null)
+                      ? widget.activeColor
+                      : ranges![inRange[0]].color,
+            ),
+            child: Text(
+              widget.local == 'en'
+                  ? '${(index + 1) - extraDays}'
+                  : convertToArOrEnNumerals('${(index + 1) - extraDays}'),
+              style: ((dateIndex != -1 || inRange[0] != -1)
+                  ? ((dates != null || ranges != null)
+                      ? widget.activeStyle.copyWith(
+                          color: widget.closeDateBefore == null
+                              ? (inRange[0] == -1
+                                  ? (dates![dateIndex].textColor ??
+                                      widget.activeStyle.color)
+                                  : (ranges![inRange[0]].textColor ??
+                                      widget.activeStyle.color))
+                              : (DateTime(
+                                          widget.closeDateBefore!.year,
+                                          widget.closeDateBefore!.month,
+                                          widget.closeDateBefore!.day)
+                                      .isAfter(DateTime(
+                                          currentDate.year,
+                                          currentDate.month,
+                                          (index + 1) - extraDays))
+                                  ? widget.closedDatesColor
+                                  : (inRange[0] == -1
+                                      ? (dates![dateIndex].textColor ??
+                                          widget.activeStyle.color)
+                                      : (ranges![inRange[0]].textColor ??
+                                          widget.activeStyle.color))),
+                        )
+                      : widget.activeStyle)
+                  : widget.closeDateBefore == null
+                      ? widget.inActiveStyle
+                      : (DateTime(
+                                  widget.closeDateBefore!.year,
+                                  widget.closeDateBefore!.month,
+                                  widget.closeDateBefore!.day)
+                              .isAfter(DateTime(currentDate.year,
+                                  currentDate.month, (index + 1) - extraDays))
+                          ? widget.inActiveStyle
+                              .copyWith(color: widget.closedDatesColor)
+                          : widget.inActiveStyle)),
+            ),
+          ),
+          Align(
+            alignment: widget.iconAlignment,
+            child: inRange[0] == -1
+                ? (dateIndex == -1 ? null : dates![dateIndex].icon)
+                : (inRange[1] == 'start' ? ranges![inRange[0]].icon : null),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildMonthAndYearsType(
+    void Function() backArrow,
+    void Function() forwardArrow,
+  ) {
+    return Container(
+      margin: edge(
+        padding: widget.daysMargin,
+      ),
+      decoration: widget.calendarStyle == CustomCalendarStyle.withBorder
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(widget.calendarBorderRadius),
+              border: Border.all(
+                color: widget.calendarBorderColor,
+                width: widget.calendarBorderWidth,
+              ),
+            )
+          : null,
+      child: Column(
+        children: [
+          GestureDetector(
+            onHorizontalDragEnd: (DragEndDetails details) {
+              if (details.primaryVelocity != null) {
+                if (details.primaryVelocity! > 0) {
+                  // User dragged from left to right
+                  widget.local == 'en' ? backArrow() : forwardArrow();
+                } else {
+                  // User dragged from right to left
+                  widget.local == 'en' ? forwardArrow() : backArrow();
+                }
+              }
+            },
+            child: Container(
+              color: widget.daysBodyBackground,
+              padding: widget.calendarStyle == CustomCalendarStyle.withBorder
+                  ? edge(padding: const EdgeInsets.all(3))
+                  : edge(padding: EdgeInsets.zero),
+              height: widget.calendarStyle == CustomCalendarStyle.withBorder
+                  ? 260
+                  : 255,
+              child: GridView.builder(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, mainAxisExtent: 63),
+                itemBuilder: (_, index) {
+                  return InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    onTap: () {
+                      setState(() {
+                        currentDate = DateTime(currentDate.year, index + 1, 1);
+                        if (widget.onDayTapped != null) {
+                          widget.onDayTapped!(currentDate);
+                        }
+                        dates!.clear();
+                        dates!.add(Date(
+                          date: DateTime(currentDate.year, index + 1, 1),
+                        ));
+                        if (widget.onDatesUpdated != null) {
+                          widget.onDatesUpdated!(dates!);
+                        }
+                      });
+                    },
+                    child: SlideTransition(
+                      position: _offsetAnimation,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(widget.radius),
+                          color: DateTime(currentDate.year, index + 1, 1) ==
+                                  DateTime(
+                                      currentDate.year, currentDate.month, 1)
+                              ? widget.activeColor
+                              : Colors.transparent,
+                        ),
+                        child: Text(
+                          widget.local == 'en'
+                              ? monthsEn[index]
+                              : monthsName[monthsEn[index]]!,
+                          style: DateTime(currentDate.year, index + 1, 1) ==
+                                  DateTime(
+                                      currentDate.year, currentDate.month, 1)
+                              ? widget.activeStyle
+                              : widget.inActiveStyle,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                itemCount: 12,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<dynamic> defaultShowDialog({
+    required BuildContext context,
+    EdgeInsets? padding,
+  }) {
+    return showDialog(
+      useSafeArea: true,
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.5),
+      builder: (context) => Material(
+        color: Colors.transparent,
+        child: Center(
+          child: Container(
+            height: 400,
+            margin: edge(padding: const EdgeInsets.only(left: 34, right: 34)),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: edge(padding: const EdgeInsets.all(24)),
+                  child: Column(
+                    children: [
+                      ColorPicker(
+                        pickerColor: addDates == 0
+                            ? (dateColor == 0 ? addDayColor : addDayTextColor)
+                            : (dateColor == 0
+                                ? addRangeColor
+                                : addRangeTextColor),
+                        enableAlpha: false,
+                        colorPickerWidth: 245,
+                        pickerAreaHeightPercent: 0.8,
+                        onColorChanged: (Color newColor) {
+                          setState(() {
+                            if (addDates == 0) {
+                              if (dateColor == 0) {
+                                addDayColor = newColor;
+                              } else {
+                                addDayTextColor = newColor;
+                              }
+                            } else {
+                              if (dateColor == 0) {
+                                addRangeColor = newColor;
+                              } else {
+                                addRangeTextColor = newColor;
+                              }
+                            }
+                          });
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          addDatesItem(
+                              text: widget.local == 'en'
+                                  ? 'Background'
+                                  : 'الخلفية',
+                              color: dateColor == 0
+                                  ? widget.addDatesIndicatorActiveColor
+                                  : widget.addDatesIndicatorColor,
+                              textStyle: dateColor == 0
+                                  ? widget.addDatesActiveTextStyle
+                                  : widget.addDatesTextStyle,
+                              onTap: () {
+                                setState(() {
+                                  dateColor = 0;
+                                  Navigator.pop(context);
+                                  defaultShowDialog(context: context);
+                                });
+                              }),
+                          addDatesItem(
+                              text: widget.local == 'en'
+                                  ? 'Text Color'
+                                  : 'لون النص',
+                              color: dateColor == 1
+                                  ? widget.addDatesIndicatorActiveColor
+                                  : widget.addDatesIndicatorColor,
+                              textStyle: dateColor == 1
+                                  ? widget.addDatesActiveTextStyle
+                                  : widget.addDatesTextStyle,
+                              onTap: () {
+                                setState(() {
+                                  dateColor = 1;
+                                  Navigator.pop(context);
+                                  defaultShowDialog(context: context);
+                                });
+                              }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: widget.local == 'en'
+                      ? Alignment.topRight
+                      : Alignment.topLeft,
+                  child: IconButton(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.clear,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildYearsCard(int countYears) {
+    return AnimatedContainer(
+      duration: widget.yearDuration,
+      margin: edge(
+          padding: EdgeInsets.only(
+        left: widget.local == 'en'
+            ? widget.headerMargin.left + 70
+            : widget.headerMargin.left + 35,
+        top: 30 + widget.headerMargin.top,
+      )),
+      height: showYears ? 240 : 0,
+      width: 80,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(1, 0),
+            blurRadius: 5,
+            color: Colors.black12,
+          )
+        ],
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: List.generate(61, (index) {
+            countYears++;
+            int year = DateTime.now().year + countYears;
+            return Padding(
+              padding: edge(padding: const EdgeInsets.only(top: 5, bottom: 5)),
+              child: InkWell(
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    currentDate = DateTime(year, currentDate.month, 1);
+                    showYears = false;
+                  });
+                },
+                child: Text(
+                  widget.local == 'en'
+                      ? '${DateTime.now().year + countYears}'
+                      : convertToArOrEnNumerals(
+                          '${DateTime.now().year + countYears}'),
+                  style: ((DateTime.now().year + countYears) ==
+                          currentDate.year)
+                      ? widget.dropDownYearsStyle.copyWith(color: Colors.blue)
+                      : widget.dropDownYearsStyle,
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget buildAddMultiDatesAndRanges(BuildContext context) {
+    return Padding(
+      padding: edge(padding: widget.addDatesMargin),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          addDatesItem(
+              text: widget.local == 'en' ? 'Add Days' : 'أضف أيام',
+              color: addDates == 0
+                  ? widget.addDatesIndicatorActiveColor
+                  : widget.addDatesIndicatorColor,
+              textStyle: addDates == 0
+                  ? widget.addDatesActiveTextStyle
+                  : widget.addDatesTextStyle,
+              onTap: () {
+                setState(() {
+                  addDates = 0;
+                  dateColor = 0;
+                  defaultShowDialog(
+                    context: context,
+                  );
+                });
+              }),
+          addDatesItem(
+              text: widget.local == 'en' ? 'Add Ranges' : 'أضف نطاقات',
+              color: addDates == 1
+                  ? widget.addDatesIndicatorActiveColor
+                  : widget.addDatesIndicatorColor,
+              textStyle: addDates == 1
+                  ? widget.addDatesActiveTextStyle
+                  : widget.addDatesTextStyle,
+              onTap: () {
+                setState(() {
+                  addDates = 1;
+                  dateColor = 0;
+                  defaultShowDialog(
+                    context: context,
+                  );
+                });
+              }),
+        ],
+      ),
+    );
   }
 }

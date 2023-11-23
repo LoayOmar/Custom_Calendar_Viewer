@@ -123,17 +123,19 @@ class _MyHomePageState extends State<MyHomePage> {
             closeDateBefore: DateTime.now(),
             closedDatesColor: Colors.grey.withOpacity(0.7),
             //showHeader: false,
-            //showMonthAndYearHeader: true,
             showBorderAfterDayHeader: true,
             //headerAlignment: MainAxisAlignment.center,
             onDayTapped: (date) {
               // Handel your code here.
+              print('date');
               print(date);
             },
             onDatesUpdated: (newDates) {
+              print('dates');
               print(newDates.length);
             },
             onRangesUpdated: (newRanges) {
+              print('ranges');
               print(newRanges.length);
             },
             showCurrentDayBorder: false,
