@@ -87,6 +87,9 @@ final List<String>? daysNameColors;
 /// - This function will give you the date for the day that's tapped
 final Function(DateTime date)? onDayTapped;
 
+/// - This function will give you the new date when the month or year updated 
+final Function(DateTime date)? onCalendarUpdate;
+
 /// - This function will give you the updated lest for dates
 final Function(List<Date>)? onDatesUpdated;
 

@@ -44,6 +44,9 @@ class CustomCalendarViewer extends StatefulWidget {
   /// - This function will give you the date for the day that's tapped
   final Function(DateTime date)? onDayTapped;
 
+  /// - This function will give you the new date when the month or year updated
+  final Function(DateTime date)? onCalendarUpdate;
+
   /// - This function will give you the updated lest for dates
   final Function(List<Date>)? onDatesUpdated;
 
@@ -242,6 +245,7 @@ class CustomCalendarViewer extends StatefulWidget {
     this.ranges,
     this.daysNameColors,
     this.onDayTapped,
+    this.onCalendarUpdate,
     this.onDatesUpdated,
     this.onRangesUpdated,
     this.calendarType = CustomCalendarType.view,
@@ -418,10 +422,16 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             if (widget.calendarType == CustomCalendarType.monthsAndYears) {
               currentDate =
                   DateTime(currentDate.year - 1, currentDate.month, 1);
+              if(widget.onCalendarUpdate != null){
+                widget.onCalendarUpdate!(currentDate);
+              }
             } else {
               addMonth--;
               currentDate =
                   DateTime(currentDate.year, currentDate.month - 1, 1);
+              if(widget.onCalendarUpdate != null){
+                widget.onCalendarUpdate!(currentDate);
+              }
             }
           });
         });
@@ -436,10 +446,16 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             if (widget.calendarType == CustomCalendarType.monthsAndYears) {
               currentDate =
                   DateTime(currentDate.year + 1, currentDate.month, 1);
+              if(widget.onCalendarUpdate != null){
+                widget.onCalendarUpdate!(currentDate);
+              }
             } else {
               addMonth++;
               currentDate =
                   DateTime(currentDate.year, currentDate.month + 1, 1);
+              if(widget.onCalendarUpdate != null){
+                widget.onCalendarUpdate!(currentDate);
+              }
             }
           });
         });
@@ -1168,7 +1184,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     void Function() backArrow,
     void Function() forwardArrow,
   ) {
-    if(widget.dates != null){
+    if (widget.dates != null) {
       setState(() {
         currentDate = widget.dates![0].date;
       });
@@ -1427,6 +1443,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   setState(() {
                     currentDate = DateTime(year, currentDate.month, 1);
                     showYears = false;
+                    if(widget.onCalendarUpdate != null){
+                      widget.onCalendarUpdate!(currentDate);
+                    }
                   });
                 },
                 child: Text(

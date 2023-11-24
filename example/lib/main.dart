@@ -125,17 +125,22 @@ class _MyHomePageState extends State<MyHomePage> {
             //showHeader: false,
             showBorderAfterDayHeader: true,
             //headerAlignment: MainAxisAlignment.center,
+            onCalendarUpdate: (date) {
+              // Handel your code here.
+              print('onCalendarUpdate');
+              print(date);
+            },
             onDayTapped: (date) {
               // Handel your code here.
-              print('date');
+              print('onDayTapped');
               print(date);
             },
             onDatesUpdated: (newDates) {
-              print('dates');
+              print('onDatesUpdated');
               print(newDates.length);
             },
             onRangesUpdated: (newRanges) {
-              print('ranges');
+              print('onRangesUpdated');
               print(newRanges.length);
             },
             showCurrentDayBorder: false,
