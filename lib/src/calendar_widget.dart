@@ -25,6 +25,7 @@ enum CustomCalendarStyle {
 
 List<Date>? dates;
 List<RangeDate>? ranges;
+DateTime currentDate = DateTime.now();
 
 class CustomCalendarViewer extends StatefulWidget {
   /// - Here you can add specific active days dates
@@ -325,7 +326,6 @@ class CustomCalendarViewer extends StatefulWidget {
 
 class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     with SingleTickerProviderStateMixin {
-  DateTime currentDate = DateTime.now();
   final List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   final List<String> arDays = ['أ', 'ث', 'أ', 'خ', 'ج', 'س', 'ح'];
   final Map<String, String> monthsName = {
@@ -422,14 +422,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             if (widget.calendarType == CustomCalendarType.monthsAndYears) {
               currentDate =
                   DateTime(currentDate.year - 1, currentDate.month, 1);
-              if(widget.onCalendarUpdate != null){
+              if (widget.onCalendarUpdate != null) {
                 widget.onCalendarUpdate!(currentDate);
               }
             } else {
               addMonth--;
               currentDate =
                   DateTime(currentDate.year, currentDate.month - 1, 1);
-              if(widget.onCalendarUpdate != null){
+              if (widget.onCalendarUpdate != null) {
                 widget.onCalendarUpdate!(currentDate);
               }
             }
@@ -446,14 +446,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             if (widget.calendarType == CustomCalendarType.monthsAndYears) {
               currentDate =
                   DateTime(currentDate.year + 1, currentDate.month, 1);
-              if(widget.onCalendarUpdate != null){
+              if (widget.onCalendarUpdate != null) {
                 widget.onCalendarUpdate!(currentDate);
               }
             } else {
               addMonth++;
               currentDate =
                   DateTime(currentDate.year, currentDate.month + 1, 1);
-              if(widget.onCalendarUpdate != null){
+              if (widget.onCalendarUpdate != null) {
                 widget.onCalendarUpdate!(currentDate);
               }
             }
@@ -1443,7 +1443,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   setState(() {
                     currentDate = DateTime(year, currentDate.month, 1);
                     showYears = false;
-                    if(widget.onCalendarUpdate != null){
+                    if (widget.onCalendarUpdate != null) {
                       widget.onCalendarUpdate!(currentDate);
                     }
                   });
