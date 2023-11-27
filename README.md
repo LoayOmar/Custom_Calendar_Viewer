@@ -214,8 +214,9 @@ final Color closedDatesColor;
 
 // - ToolTip Style
 
-/// - The text to display in the tooltip. Only one of message.
-final String toolTipMessage;
+/// - The text to display in the tooltip.
+/// - The list should have the same length for the month days number
+final List<String> toolTipMessage;
 
 /// - The height of the tooltip's child.
 /// - If the child is null, then this is the tooltip's intrinsic height.
