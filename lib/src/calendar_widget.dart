@@ -832,10 +832,10 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                               : inRange[0] != -1
                                   ? (widget.local == 'en'
                                       ? ranges![inRange[0]].toolTipEnMessage
-                                      : ranges![inRange[0]].toolTipEnMessage)
+                                      : ranges![inRange[0]].toolTipArMessage)
                                   : (widget.local == 'en'
                                       ? dates![dateIndex].toolTipEnMessage
-                                      : dates![dateIndex].toolTipEnMessage),
+                                      : dates![dateIndex].toolTipArMessage),
                           style: widget.toolTipTextStyle ??
                               const TextStyle(color: Colors.white),
                           textAlign: widget.toolTipTextAlign,
@@ -1058,8 +1058,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                       key: widgetKey[index - extraDays],
                       onTap: () {
                         onDateTaped(index);
-                        if (showOverlay && overlayEntry != null)
+                        if (showOverlay && overlayEntry != null) {
                           overlayEntry!.builder(context);
+                        }
                         if (showOverlay) {
                           showOrHideOverlay(context, index, extraDays, inRange,
                               dateIndex); // Close the current tooltip
