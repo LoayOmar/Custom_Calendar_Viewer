@@ -124,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
             closedDatesColor: Colors.grey.withOpacity(0.7),
             //showHeader: false,
             showBorderAfterDayHeader: true,
+            showTooltip: true,
             //headerAlignment: MainAxisAlignment.center,
             onCalendarUpdate: (date) {
               // Handel your code here.

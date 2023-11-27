@@ -950,26 +950,26 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
               List inRange = checkInRange(DateTime(currentDate.year,
                   currentDate.month, (index + 1) - extraDays));
               return widget.showTooltip
-                  ? Tooltip(
-                      message: widget.toolTipMessage,
-                      height: widget.toolTipHeight,
-                      padding: widget.toolTipPadding,
-                      margin: widget.toolTipMargin,
-                      triggerMode: widget.toolTipTriggerMode,
-                      preferBelow: widget.toolTipPreferBelow,
-                      decoration: widget.toolTipDecoration,
-                      textStyle: widget.toolTipTextStyle,
-                      textAlign: widget.toolTipTextAlign,
-                      waitDuration: widget.toolTipWaitDuration,
-                      showDuration: widget.toolTipShowDuration,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        onTap: (){
-                          onDateTaped(index);
-                        },
+                  ? InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: (){
+                  onDateTaped(index);
+                },
+                    child: Tooltip(
+                        message: widget.toolTipMessage,
+                        height: widget.toolTipHeight,
+                        padding: widget.toolTipPadding,
+                        margin: widget.toolTipMargin,
+                        triggerMode: widget.toolTipTriggerMode,
+                        preferBelow: widget.toolTipPreferBelow,
+                        decoration: widget.toolTipDecoration,
+                        textStyle: widget.toolTipTextStyle,
+                        textAlign: widget.toolTipTextAlign,
+                        waitDuration: widget.toolTipWaitDuration,
+                        showDuration: widget.toolTipShowDuration,
                         child: dateDayWidget(
                           inRange,
                           index,
@@ -977,7 +977,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                           dateIndex,
                         ),
                       ),
-                    )
+                  )
                   : InkWell(
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
