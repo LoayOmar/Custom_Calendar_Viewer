@@ -1169,11 +1169,14 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                           : widget.inActiveStyle)),
             ),
           ),
-          Align(
-            alignment: widget.iconAlignment,
-            child: inRange[0] == -1
-                ? (dateIndex == -1 ? null : dates![dateIndex].icon)
-                : (inRange[1] == 'start' ? ranges![inRange[0]].icon : null),
+          Padding(
+            padding: widget.iconPadding,
+            child: Align(
+              alignment: widget.iconAlignment,
+              child: inRange[0] == -1
+                  ? (dateIndex == -1 ? null : dates![dateIndex].icon)
+                  : (inRange[1] == 'start' ? ranges![inRange[0]].icon : null),
+            ),
           ),
         ],
       ),
