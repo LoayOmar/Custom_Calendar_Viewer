@@ -551,6 +551,15 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           }
         });
       }
+      else{
+        setState(() {
+          DateTime date = DateTime(
+              currentDate.year, currentDate.month, index - extraDays + 1);
+          if (widget.onDayTapped != null) {
+            widget.onDayTapped!(date);
+          }
+        });
+      }
     }
 
     return Stack(
