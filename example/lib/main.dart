@@ -37,10 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
     Date(
       date: DateTime(2023, 11, 8),
       color: Colors.red,
+      toolTipEnMessage: 'Date Message',
+      toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
       date: DateTime(2023, 11, 10),
       color: Colors.amber,
+      toolTipEnMessage: 'Date Message',
+      toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
       date: DateTime(2023, 11, 7),
@@ -91,6 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
         Icons.add,
         size: 15,
       ),
+      toolTipEnMessage: 'Range Message',
+      toolTipArMessage: 'رسالة المدي',
     ),
     RangeDate(
       start: DateTime(2023, 11, 24),
@@ -101,44 +107,15 @@ class _MyHomePageState extends State<MyHomePage> {
         size: 15,
         color: Colors.red,
       ),
+      toolTipEnMessage: 'Range Message',
+      toolTipArMessage: 'رسالة المدي',
     ),
     RangeDate(
       start: DateTime(2023, 11, 30),
       end: DateTime(2023, 11, 29),
     ),
   ];
-  List<String> toolTipMsg = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '17',
-    '18',
-    '19',
-    '20',
-    '21',
-    '22',
-    '23',
-    '24',
-    '25',
-    '26',
-    '27',
-    '28',
-    '29',
-    '30',
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -150,14 +127,14 @@ class _MyHomePageState extends State<MyHomePage> {
             local: local,
             dates: dates,
             ranges: ranges,
-            toolTipMessage: toolTipMsg,
-            showTooltip: true,
             calendarType: CustomCalendarType.multiDatesAndRanges,
             calendarStyle: CustomCalendarStyle.normal,
-            //closeDateBefore: DateTime.now(),
-            //closedDatesColor: Colors.grey.withOpacity(0.7),
+            closeDateBefore: DateTime.now(),
+            closedDatesColor: Colors.grey.withOpacity(0.7),
             //showHeader: false,
             showBorderAfterDayHeader: true,
+            showTooltip: true,
+            toolTipMessage: '',
             //headerAlignment: MainAxisAlignment.center,
             onCalendarUpdate: (date) {
               // Handel your code here.

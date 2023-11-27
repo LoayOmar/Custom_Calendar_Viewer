@@ -214,32 +214,23 @@ final Color closedDatesColor;
 
 // - ToolTip Style
 
-/// - The text to display in the tooltip.
-/// - The list should have the same length for the month days number
-final List<String> toolTipMessage;
+/// - The text to display in the tooltip. Only one of message.
+final String toolTipMessage;
 
 /// - The height of the tooltip's child.
 /// - If the child is null, then this is the tooltip's intrinsic height.
 final double? toolTipHeight;
 
+/// - If you need to add space to toolTip from left side
+final double toolTipAddSpaceLeft;
+
+/// - If you need to add space to toolTip from top
+final double toolTipAddSpaceTop;
+
 /// - The amount of space by which to inset the tooltip's child.
 /// - On mobile, defaults to 16.0 logical pixels horizontally and 4.0 vertically.
 /// - On desktop, defaults to 8.0 logical pixels horizontally and 4.0 vertically.
 final EdgeInsets? toolTipPadding;
-
-/// - The empty space that surrounds the tooltip.
-/// - Defines the tooltip's outer Container.margin. By default, a long tooltip will span the width of its window. If long enough, a tooltip might also span the window's height. This property allows one to define how much space the tooltip must be inset from the edges of their display window.
-/// - If this property is null, then TooltipThemeData.margin is used. If TooltipThemeData.margin is also null, the default margin is 0.0 logical pixels on all sides.
-final EdgeInsets? toolTipMargin;
-
-/// - Whether the tooltip defaults to being displayed below the widget.
-/// - Defaults to true. If there is insufficient space to display the tooltip in the preferred direction, the tooltip will be displayed in the opposite direction.
-final bool toolTipPreferBelow;
-
-/// - The TooltipTriggerMode that will show the tooltip.
-/// - If this property is null, then TooltipThemeData.triggerMode is used. If TooltipThemeData.triggerMode is also null, the default mode is TooltipTriggerMode.longPress.
-/// - This property does not affect mouse devices. Setting triggerMode to TooltipTriggerMode.manual will not prevent the tooltip from showing when the mouse cursor hovers over it.
-final TooltipTriggerMode toolTipTriggerMode;
 
 /// - Specifies the tooltip's shape and background color.
 /// - The tooltip shape defaults to a rounded rectangle with a border radius of 4.0. Tooltips will also default to an opacity of 90% and with the color Colors.grey\700\ if ThemeData.brightness is Brightness.dark, and Colors.white if it is Brightness.light.
@@ -257,10 +248,6 @@ final TextAlign? toolTipTextAlign;
 /// - The length of time that a pointer must hover over a tooltip's widget before the tooltip will be shown.
 /// - Defaults to 0 milliseconds (tooltips are shown immediately upon hover).
 final Duration? toolTipWaitDuration;
-
-/// - The length of time that the tooltip will be shown after a long press is released (if triggerMode is TooltipTriggerMode.longPress) or a tap is released (if triggerMode is TooltipTriggerMode.tap) or mouse pointer exits the widget.
-/// - Defaults to 1.5 seconds for long press and tap released or 0.1 seconds for mouse pointer exits the widget.
-final Duration? toolTipShowDuration;
 
 /// - If this true the Tooltip will be active
 final bool showTooltip;

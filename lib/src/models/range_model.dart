@@ -6,11 +6,16 @@ class RangeDate {
   Color? color;
   Color? textColor;
   Widget? icon;
+  String toolTipArMessage;
+  String toolTipEnMessage;
 
-  RangeDate(
-      {required this.start,
-      required this.end,
-      this.color,
-      this.textColor,
-      this.icon});
+  RangeDate({
+    required this.start,
+    required this.end,
+    this.color,
+    this.textColor,
+    this.icon,
+    this.toolTipEnMessage = '',
+    this.toolTipArMessage = '',
+  });
 }
