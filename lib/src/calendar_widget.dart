@@ -550,8 +550,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             }
           }
         });
-      }
-      else{
+      } else {
         setState(() {
           DateTime date = DateTime(
               currentDate.year, currentDate.month, index - extraDays + 1);
@@ -963,11 +962,20 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                       textAlign: widget.toolTipTextAlign,
                       waitDuration: widget.toolTipWaitDuration,
                       showDuration: widget.toolTipShowDuration,
-                      child: dateDayWidget(
-                        inRange,
-                        index,
-                        extraDays,
-                        dateIndex,
+                      child: InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: (){
+                          onDateTaped(index);
+                        },
+                        child: dateDayWidget(
+                          inRange,
+                          index,
+                          extraDays,
+                          dateIndex,
+                        ),
                       ),
                     )
                   : InkWell(
