@@ -23,6 +23,12 @@ enum CustomCalendarStyle {
   normal,
 }
 
+enum CustomCalendarStartDay {
+  saturday,
+  sunday,
+  monday,
+}
+
 List<Date>? dates;
 List<RangeDate>? ranges;
 DateTime currentDate = DateTime.now();
@@ -68,6 +74,12 @@ class CustomCalendarViewer extends StatefulWidget {
   ///   - CustomCalendarStyle.withBorder this will add border around the calendar
   ///   - CustomCalendarStyle.normal this will show the calendar without border
   final CustomCalendarStyle calendarStyle;
+
+  /// - From here you can change the start day there's 3 types
+  ///   - CustomCalendarStyle.saturday
+  ///   - CustomCalendarStyle.sunday
+  ///   - CustomCalendarStyle.monday
+  final CustomCalendarStartDay calendarStartDay;
 
   /// - Here you can control the active color
   final Color activeColor;
@@ -239,6 +251,7 @@ class CustomCalendarViewer extends StatefulWidget {
     this.onRangesUpdated,
     this.calendarType = CustomCalendarType.view,
     this.calendarStyle = CustomCalendarStyle.withBorder,
+    this.calendarStartDay = CustomCalendarStartDay.monday,
     this.activeColor = Colors.blue,
     this.dropArrowColor = Colors.black,
     this.movingArrowColor = Colors.black,
@@ -309,11 +322,10 @@ class CustomCalendarViewer extends StatefulWidget {
   @override
   State<CustomCalendarViewer> createState() => _CustomCalendarViewerState();
 }
-
+List<String> days = [];
+List<String> arDays = [];
 class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     with SingleTickerProviderStateMixin {
-  final List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  final List<String> arDays = ['أ', 'ث', 'أ', 'خ', 'ج', 'س', 'ح'];
   final Map<String, String> monthsName = {
     'January': 'يناير',
     'February': 'فبراير',
@@ -392,23 +404,65 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     String year = DateFormat('yyyy')
         .format(DateTime(currentDate.year, currentDate.month + addMonth, 1));
     int extraDays = 0;
-    if (firstDay == 'Mon') {
-      extraDays = 0;
-    } else if (firstDay == 'Tue') {
-      extraDays = 1;
-    } else if (firstDay == 'Wed') {
-      extraDays = 2;
-    } else if (firstDay == 'Thu') {
-      extraDays = 3;
-    } else if (firstDay == 'Fri') {
-      extraDays = 4;
-    } else if (firstDay == 'Sat') {
-      extraDays = 5;
-    } else if (firstDay == 'Sun') {
-      extraDays = 6;
+    if(widget.calendarStartDay == CustomCalendarStartDay.monday){
+      days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+      arDays = ['أ', 'ث', 'أ', 'خ', 'ج', 'س', 'ح'];
+      if (firstDay == 'Mon') {
+        extraDays = 0;
+      } else if (firstDay == 'Tue') {
+        extraDays = 1;
+      } else if (firstDay == 'Wed') {
+        extraDays = 2;
+      } else if (firstDay == 'Thu') {
+        extraDays = 3;
+      } else if (firstDay == 'Fri') {
+        extraDays = 4;
+      } else if (firstDay == 'Sat') {
+        extraDays = 5;
+      } else if (firstDay == 'Sun') {
+        extraDays = 6;
+      }
+    }else if(widget.calendarStartDay == CustomCalendarStartDay.sunday){
+      days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      arDays = ['ح', 'أ', 'ث', 'أ', 'خ', 'ج', 'س'];
+      if (firstDay == 'Sun') {
+        extraDays = 0;
+      }else if (firstDay == 'Mon') {
+        extraDays = 1;
+      } else if (firstDay == 'Tue') {
+        extraDays = 2;
+      } else if (firstDay == 'Wed') {
+        extraDays = 3;
+      } else if (firstDay == 'Thu') {
+        extraDays = 4;
+      } else if (firstDay == 'Fri') {
+        extraDays = 5;
+      } else if (firstDay == 'Sat') {
+        extraDays = 6;
+      }
+    }else if(widget.calendarStartDay == CustomCalendarStartDay.saturday){
+      days = ['S', 'S', 'M', 'T', 'W', 'T', 'F'];
+      arDays = ['س', 'ح', 'أ', 'ث', 'أ', 'خ', 'ج'];
+      if (firstDay == 'Sat') {
+        extraDays = 0;
+      }else if (firstDay == 'Sun') {
+        extraDays = 1;
+      }else if (firstDay == 'Mon') {
+        extraDays = 2;
+      } else if (firstDay == 'Tue') {
+        extraDays = 3;
+      } else if (firstDay == 'Wed') {
+        extraDays = 4;
+      } else if (firstDay == 'Thu') {
+        extraDays = 5;
+      } else if (firstDay == 'Fri') {
+        extraDays = 6;
+      }
     }
+
     int count = extraDays;
     int countYears = -31;
+
 
     void backArrow() {
       setState(() {

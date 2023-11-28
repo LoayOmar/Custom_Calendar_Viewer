@@ -136,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
             showTooltip: true,
             toolTipMessage: '',
             //headerAlignment: MainAxisAlignment.center,
+            calendarStartDay: CustomCalendarStartDay.monday,
             onCalendarUpdate: (date) {
               // Handel your code here.
               print('onCalendarUpdate');
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
               print('onRangesUpdated');
               print(newRanges.length);
             },
-            showCurrentDayBorder: false,
+            //showCurrentDayBorder: false,
           ),
         ),
       ),

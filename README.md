@@ -111,6 +111,12 @@ final CustomCalendarType calendarType;
 ///   - CustomCalendarStyle.normal this will show the calendar without border
 final CustomCalendarStyle calendarStyle;
 
+/// - From here you can change the start day there's 3 types
+///   - CustomCalendarStyle.saturday
+///   - CustomCalendarStyle.sunday
+///   - CustomCalendarStyle.monday
+final CustomCalendarStartDay calendarStartDay;
+
 /// - Here you can control the active color
 final Color activeColor;
 
