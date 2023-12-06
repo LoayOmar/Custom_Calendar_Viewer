@@ -54,6 +54,8 @@ dependencies:
   - CustomCalendarType.multiDates this will make the user can add multiple dates.
   - CustomCalendarType.multiRanges this will make the user can add multiple ranges.
   - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges.
+* Now you can control the start year and the end year.
+* You can make the calendar moving vertical or horizontal.
 
 ## Getting started
 
@@ -117,6 +119,17 @@ final CustomCalendarStyle calendarStyle;
 ///   - CustomCalendarStyle.monday
 final CustomCalendarStartDay calendarStartDay;
 
+/// - From here you can change the direction when you move between months there's 2 types
+///   - CustomCalendarAnimatedDirection.horizontal
+///   - CustomCalendarAnimatedDirection.vertical
+final CustomCalendarAnimatedDirection animateDirection;
+
+/// - From here you can control the calendar start year
+final int startYear;
+
+/// - From here you can control the calendar end year
+final int endYear;
+
 /// - Here you can control the active color
 final Color activeColor;
 
@@ -152,6 +165,9 @@ final double dropArrowSize;
 
 /// - From here you can control the moving arrow size
 final double movingArrowSize;
+
+/// - From here you can control the space between moving arrows
+final double spaceBetweenMovingArrow;
 
 /// - you can control the radius for the active days
 final double radius;
