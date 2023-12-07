@@ -35,6 +35,18 @@ class _MyHomePageState extends State<MyHomePage> {
   String local = 'en';
   List<Date> dates = [
     Date(
+      date: DateTime(2023, 1, 1),
+      color: Colors.red,
+      toolTipEnMessage: 'Date Message',
+      toolTipArMessage: 'رسالة التاريخ',
+    ),
+    Date(
+      date: DateTime(2023, 3, 1),
+      color: Colors.red,
+      toolTipEnMessage: 'Date Message',
+      toolTipArMessage: 'رسالة التاريخ',
+    ),
+    Date(
       date: DateTime(2023, 11, 8),
       color: Colors.red,
       toolTipEnMessage: 'Date Message',
@@ -121,44 +133,52 @@ class _MyHomePageState extends State<MyHomePage> {
     return Directionality(
       textDirection: local == 'en' ? TextDirection.ltr : TextDirection.rtl,
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.only(top: 150),
-          child: CustomCalendarViewer(
-            local: local,
-            dates: dates,
-            ranges: ranges,
-            calendarType: CustomCalendarType.multiDatesAndRanges,
-            calendarStyle: CustomCalendarStyle.normal,
-            animateDirection: CustomCalendarAnimatedDirection.vertical,
-            movingArrowSize: 24,
-            spaceBetweenMovingArrow: 20,
-            closeDateBefore: DateTime.now(),
-            closedDatesColor: Colors.grey.withOpacity(0.7),
-            //showHeader: false,
-            showBorderAfterDayHeader: true,
-            showTooltip: true,
-            toolTipMessage: '',
-            //headerAlignment: MainAxisAlignment.center,
-            calendarStartDay: CustomCalendarStartDay.monday,
-            onCalendarUpdate: (date) {
-              // Handel your code here.
-              print('onCalendarUpdate');
-              print(date);
-            },
-            onDayTapped: (date) {
-              // Handel your code here.
-              print('onDayTapped');
-              print(date);
-            },
-            onDatesUpdated: (newDates) {
-              print('onDatesUpdated');
-              print(newDates.length);
-            },
-            onRangesUpdated: (newRanges) {
-              print('onRangesUpdated');
-              print(newRanges.length);
-            },
-            //showCurrentDayBorder: false,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Column(
+              children: [
+
+                const Text('View Current Year', style: TextStyle(fontSize: 18),),
+                Expanded(
+                  child: CustomCalendarViewer(
+                    local: local,
+                    dates: dates,
+                    ranges: ranges,
+                    calendarType: CustomCalendarType.viewFullYear,
+                    showHeader: false,
+                    headerAlignment: MainAxisAlignment.center,
+                    calendarStyle: CustomCalendarStyle.normal,
+                    animateDirection: CustomCalendarAnimatedDirection.vertical,
+                    movingArrowSize: 24,
+                    spaceBetweenMovingArrow: 20,
+                    showBorderAfterDayHeader: true,
+                    showTooltip: true,
+                    toolTipMessage: '',
+                    calendarStartDay: CustomCalendarStartDay.monday,
+                    onCalendarUpdate: (date) {
+                      // Handel your code here.
+                      print('onCalendarUpdate');
+                      print(date);
+                    },
+                    onDayTapped: (date) {
+                      // Handel your code here.
+                      print('onDayTapped');
+                      print(date);
+                    },
+                    onDatesUpdated: (newDates) {
+                      print('onDatesUpdated');
+                      print(newDates.length);
+                    },
+                    onRangesUpdated: (newRanges) {
+                      print('onRangesUpdated');
+                      print(newRanges.length);
+                    },
+                    //showCurrentDayBorder: false,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

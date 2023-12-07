@@ -1,3 +1,3 @@
-## 0.3.7
+## 0.3.8
 
 * Amazing package help you to view your plans or important dates in calendar.

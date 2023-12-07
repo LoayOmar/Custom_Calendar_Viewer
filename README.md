@@ -23,7 +23,10 @@
 |:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|
 
 | ![Ex 16](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/16.jpg) | ![Ex 17](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/17.jpg) | ![Ex 18](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/18.jpg) | ![Ex 19](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/19.jpg) |
-|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------:|
+|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|
+
+| ![Ex 20](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/20.jpg) | ![Ex 21](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/21.jpg) |
+|:-------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|
 
 ## Installation
 
@@ -48,14 +51,17 @@ dependencies:
 * Now you can add multiple dates or ranges when the application is started.
 * You can handle the color for background or the text color when you add new ranges or dates.
 * You can use CustomCalendarType to handle the type of calendar.
-  - CustomCalendarType.none this will make the user can't press on the calendar.
-  - CustomCalendarType.date this will make the user can add only one date.
-  - CustomCalendarType.range this will make the user to add only one range.
-  - CustomCalendarType.multiDates this will make the user can add multiple dates.
-  - CustomCalendarType.multiRanges this will make the user can add multiple ranges.
-  - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges.
+  - CustomCalendarType.view this will make the user can't press on the calendar just for view
+  - CustomCalendarType.viewFullYear this will make the user can't press on the calendar just for view full year in the screen
+  - CustomCalendarType.date this will make the user can add only one date
+  - CustomCalendarType.range this will make the user to add only one range
+  - CustomCalendarType.multiDates this will make the user can add multiple dates
+  - CustomCalendarType.multiRanges this will make the user can add multiple ranges
+  - CustomCalendarType.multiDatesAndRanges this will make the user can add multiple dates and ranges
+  - CustomCalendarType.monthsAndYears this will make you can show calendar with only years and months
 * Now you can control the start year and the end year.
 * You can make the calendar moving vertical or horizontal.
+* You can show full months for the current year.
 
 ## Getting started
 
@@ -100,6 +106,7 @@ final Function(List<RangeDate>)? onRangesUpdated;
 
 /// - There's 6 types to handle your calendar
 ///   - CustomCalendarType.view this will make the user can't press on the calendar just for view
+///   - CustomCalendarType.viewFullYear this will make the user can't press on the calendar just for view full year in the screen
 ///   - CustomCalendarType.date this will make the user can add only one date
 ///   - CustomCalendarType.range this will make the user to add only one range
 ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
