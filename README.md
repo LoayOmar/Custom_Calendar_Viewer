@@ -137,6 +137,9 @@ final int startYear;
 /// - From here you can control the calendar end year
 final int endYear;
 
+/// - This widget will be between the calendars this shown only on CustomCalendarType.viewFullYear
+final Widget separatedWidget;
+
 /// - Here you can control the active color
 final Color activeColor;
 
