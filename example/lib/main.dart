@@ -138,8 +138,53 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.only(top: 20),
             child: Column(
               children: [
-
-                const Text('View Current Year', style: TextStyle(fontSize: 18),),
+                const Text(
+                  'Multi Dates And Ranges',
+                  style: TextStyle(fontSize: 18),
+                ),
+                CustomCalendarViewer(
+                  local: local,
+                  dates: dates,
+                  ranges: ranges,
+                  calendarType: CustomCalendarType.multiDatesAndRanges,
+                  calendarStyle: CustomCalendarStyle.normal,
+                  animateDirection: CustomCalendarAnimatedDirection.vertical,
+                  movingArrowSize: 24,
+                  spaceBetweenMovingArrow: 20,
+                  closeDateBefore: DateTime.now(),
+                  closedDatesColor: Colors.grey.withOpacity(0.7),
+                  //showHeader: false,
+                  showBorderAfterDayHeader: true,
+                  showTooltip: true,
+                  toolTipMessage: '',
+                  //headerAlignment: MainAxisAlignment.center,
+                  calendarStartDay: CustomCalendarStartDay.monday,
+                  onCalendarUpdate: (date) {
+                    // Handel your code here.
+                    print('onCalendarUpdate');
+                    print(date);
+                  },
+                  onDayTapped: (date) {
+                    // Handel your code here.
+                    print('onDayTapped');
+                    print(date);
+                  },
+                  onDatesUpdated: (newDates) {
+                    print('onDatesUpdated');
+                    print(newDates.length);
+                  },
+                  onRangesUpdated: (newRanges) {
+                    print('onRangesUpdated');
+                    print(newRanges.length);
+                  },
+                  //showCurrentDayBorder: false,
+                ),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 15),
+                child: Divider(),),
+                const Text(
+                  'View Current Year',
+                  style: TextStyle(fontSize: 18),
+                ),
                 Expanded(
                   child: CustomCalendarViewer(
                     local: local,

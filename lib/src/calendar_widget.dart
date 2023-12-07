@@ -490,7 +490,6 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           extraDays = 6;
         }
       }
-
     }
 
     getExtraDays();
@@ -569,7 +568,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     }
 
     void onDateTaped(int index) {
-      if (widget.calendarType != CustomCalendarType.view && widget.calendarType != CustomCalendarType.viewFullYear) {
+      if (widget.calendarType != CustomCalendarType.view &&
+          widget.calendarType != CustomCalendarType.viewFullYear) {
         setState(() {
           DateTime date = DateTime(
               currentDate.year, currentDate.month, index - extraDays + 1);
@@ -658,7 +658,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         });
       } else {
         setState(() {
-          if(widget.calendarType != CustomCalendarType.view){
+          if (widget.calendarType != CustomCalendarType.view) {
             DateTime date = DateTime(
                 currentDate.year, currentDate.month, index - extraDays + 1);
             if (widget.onDayTapped != null) {
@@ -675,7 +675,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
 
     if (widget.calendarType == CustomCalendarType.viewFullYear) {
       List<List<GlobalKey>> keys = [];
-      for (int j = 0; j < 12; j++){
+      for (int j = 0; j < 12; j++) {
         List<GlobalKey> k = [];
         for (int i = 0; i < 31; i++) {
           k.add(GlobalKey());
@@ -688,11 +688,11 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         itemBuilder: (context, index) {
           currentDate = DateTime(DateTime.now().year, index + 1, 1);
           addMonth = index;
-          firstDayOfNextMonth =
-          DateTime(currentDate.year, index + 2, 1);
-          firstDay = DateFormat('E')
-              .format(DateTime(currentDate.year, index + 1, 1));
-          daysInMonth = firstDayOfNextMonth.subtract(const Duration(days: 1)).day;
+          firstDayOfNextMonth = DateTime(currentDate.year, index + 2, 1);
+          firstDay =
+              DateFormat('E').format(DateTime(currentDate.year, index + 1, 1));
+          daysInMonth =
+              firstDayOfNextMonth.subtract(const Duration(days: 1)).day;
           month = DateFormat('MMMM')
               .format(DateTime(currentDate.year, index + 1, 1));
           year = DateFormat('yyyy')
@@ -705,12 +705,13 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             ),
             decoration: widget.calendarStyle == CustomCalendarStyle.withBorder
                 ? BoxDecoration(
-              borderRadius: BorderRadius.circular(widget.calendarBorderRadius),
-              border: Border.all(
-                color: widget.calendarBorderColor,
-                width: widget.calendarBorderWidth,
-              ),
-            )
+                    borderRadius:
+                        BorderRadius.circular(widget.calendarBorderRadius),
+                    border: Border.all(
+                      color: widget.calendarBorderColor,
+                      width: widget.calendarBorderWidth,
+                    ),
+                  )
                 : null,
             child: Column(
               children: [
@@ -747,25 +748,28 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   ),
                 Container(
                   color: widget.daysBodyBackground,
-                  padding: widget.calendarStyle == CustomCalendarStyle.withBorder
-                      ? edge(padding: const EdgeInsets.all(3))
-                      : edge(padding: EdgeInsets.zero),
-                  height: (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
-                      ? 285
-                      : 240,
+                  padding:
+                      widget.calendarStyle == CustomCalendarStyle.withBorder
+                          ? edge(padding: const EdgeInsets.all(3))
+                          : edge(padding: EdgeInsets.zero),
+                  height:
+                      (extraDays == 6 || (extraDays == 5 && daysInMonth == 31))
+                          ? 285
+                          : 240,
                   child: GridView.builder(
                     padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7),
                     itemBuilder: (_, idx) {
                       if (count == 0) {
                         int dateIndex = dates == null
                             ? -1
                             : dates!.indexWhere((Date date) =>
-                        date.date.year == currentDate.year &&
-                            date.date.month == currentDate.month &&
-                            date.date.day == ((idx + 1) - extraDays));
+                                date.date.year == currentDate.year &&
+                                date.date.month == currentDate.month &&
+                                date.date.day == ((idx + 1) - extraDays));
                         List inRange = checkInRange(DateTime(currentDate.year,
                             currentDate.month, (idx + 1) - extraDays));
                         return InkWell(
@@ -776,23 +780,36 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                           key: keys[index][idx - extraDays],
                           onTap: () {
                             setState(() {
-                              firstDay = DateFormat('E')
-                                  .format(DateTime(currentDate.year, index + 1, 1));
+                              firstDay = DateFormat('E').format(
+                                  DateTime(currentDate.year, index + 1, 1));
                               getExtraDays();
-                              currentDate = DateTime(DateTime.now().year, index + 1, idx - extraDays + 1);
+                              currentDate = DateTime(DateTime.now().year,
+                                  index + 1, idx - extraDays + 1);
                               onDateTaped(idx);
-                              if(widget.showTooltip){
+                              if (widget.showTooltip) {
                                 if (showOverlay && overlayEntry != null) {
                                   overlayEntry!.builder(context);
                                 }
                                 if (showOverlay) {
-                                  showOrHideOverlay(context, inRange,
-                                      dateIndex, keys[index][idx - extraDays]); // Close the current tooltip
-                                  showOrHideOverlay(context, inRange,
-                                      dateIndex, keys[index][idx - extraDays]); // Show the new tooltip immediately
+                                  showOrHideOverlay(
+                                      context,
+                                      inRange,
+                                      dateIndex,
+                                      keys[index][idx -
+                                          extraDays]); // Close the current tooltip
+                                  showOrHideOverlay(
+                                      context,
+                                      inRange,
+                                      dateIndex,
+                                      keys[index][idx -
+                                          extraDays]); // Show the new tooltip immediately
                                 } else {
-                                  showOrHideOverlay(context, inRange,
-                                      dateIndex, keys[index][idx - extraDays]); // Show the tooltip
+                                  showOrHideOverlay(
+                                      context,
+                                      inRange,
+                                      dateIndex,
+                                      keys[index][
+                                          idx - extraDays]); // Show the tooltip
                                 }
                               }
                             });
@@ -816,8 +833,11 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
             ),
           );
         },
-        separatorBuilder: (context, index) => const SizedBox(height: 20,),
-        itemCount: 12,);
+        separatorBuilder: (context, index) => const SizedBox(
+          height: 20,
+        ),
+        itemCount: 12,
+      );
     } else {
       return Stack(
         children: [
@@ -1040,7 +1060,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     BuildContext context,
     List<dynamic> inRange,
     int dateIndex,
-      GlobalKey globalKey,
+    GlobalKey globalKey,
   ) {
     setState(() {
       bool haveMessage = false;
@@ -1073,9 +1093,8 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
           final OverlayState overlay = Overlay.of(context);
           showOverlay = true;
 
-          final RenderBox? renderBox = globalKey
-              .currentContext
-              ?.findRenderObject() as RenderBox?;
+          final RenderBox? renderBox =
+              globalKey.currentContext?.findRenderObject() as RenderBox?;
 
           if (renderBox != null) {
             final position = renderBox.localToGlobal(Offset.zero);
@@ -1320,8 +1339,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     }
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) {
-        if(widget.calendarType != CustomCalendarType.viewFullYear)
-        {
+        if (widget.calendarType != CustomCalendarType.viewFullYear) {
           if (details.primaryVelocity != null &&
               widget.animateDirection ==
                   CustomCalendarAnimatedDirection.horizontal) {
@@ -1336,8 +1354,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         }
       },
       onVerticalDragEnd: (DragEndDetails details) {
-        if(widget.calendarType != CustomCalendarType.viewFullYear)
-        {
+        if (widget.calendarType != CustomCalendarType.viewFullYear) {
           if (details.primaryVelocity != null &&
               widget.animateDirection ==
                   CustomCalendarAnimatedDirection.vertical) {
@@ -1383,13 +1400,21 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                           overlayEntry!.builder(context);
                         }
                         if (showOverlay) {
-                          showOrHideOverlay(context, inRange,
-                              dateIndex, widgetKey[index - extraDays]); // Close the current tooltip
-                          showOrHideOverlay(context, inRange,
-                              dateIndex, widgetKey[index - extraDays]); // Show the new tooltip immediately
+                          showOrHideOverlay(
+                              context,
+                              inRange,
+                              dateIndex,
+                              widgetKey[index -
+                                  extraDays]); // Close the current tooltip
+                          showOrHideOverlay(
+                              context,
+                              inRange,
+                              dateIndex,
+                              widgetKey[index -
+                                  extraDays]); // Show the new tooltip immediately
                         } else {
-                          showOrHideOverlay(context, inRange,
-                              dateIndex, widgetKey[index - extraDays]); // Show the tooltip
+                          showOrHideOverlay(context, inRange, dateIndex,
+                              widgetKey[index - extraDays]); // Show the tooltip
                         }
                       },
                       child: dateDayWidget(
