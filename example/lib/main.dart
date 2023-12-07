@@ -179,8 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                   //showCurrentDayBorder: false,
                 ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 15),
-                child: Divider(),),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Divider(),
+                ),
                 const Text(
                   'View Current Year',
                   style: TextStyle(fontSize: 18),
