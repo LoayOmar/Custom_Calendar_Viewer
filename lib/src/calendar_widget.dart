@@ -696,11 +696,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
 
     List<List<GlobalKey>> keys = [];
     for (int j = 0; j < 12; j++) {
-      List<GlobalKey> k = [];
-      for (int i = 0; i < 31; i++) {
-        k.add(GlobalKey());
-      }
-      keys.add(k);
+      keys.add([]);
     }
 
     if (widget.calendarType == CustomCalendarType.viewFullYear) {
@@ -865,7 +861,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                                   DateTime(currentDate.year, index + 1, 1));
                               getExtraDays();
                               GlobalKey global = GlobalKey();
-                              keys[index][idx - extraDays] = global;
+                              keys[index].add(global);
                               int dateIndex = dates == null
                                   ? -1
                                   : dates!.indexWhere((Date date) =>
