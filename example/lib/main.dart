@@ -35,44 +35,44 @@ class _MyHomePageState extends State<MyHomePage> {
   String local = 'en';
   List<Date> dates = [
     Date(
-      date: DateTime(2023, 1, 1),
+      date: DateTime(DateTime.now().year, 1, 1),
       color: Colors.red,
       toolTipEnMessage: 'Date Message',
       toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
-      date: DateTime(2023, 3, 1),
+      date: DateTime(DateTime.now().year, 3, 1),
       color: Colors.red,
       toolTipEnMessage: 'Date Message',
       toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
-      date: DateTime(2023, 11, 8),
+      date: DateTime(DateTime.now().year, 11, 8),
       color: Colors.red,
       toolTipEnMessage: 'Date Message',
       toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
-      date: DateTime(2023, 11, 10),
+      date: DateTime(DateTime.now().year, 11, 10),
       color: Colors.amber,
       toolTipEnMessage: 'Date Message',
       toolTipArMessage: 'رسالة التاريخ',
     ),
     Date(
-      date: DateTime(2023, 11, 7),
+      date: DateTime(DateTime.now().year, 11, 7),
       color: Colors.amber,
     ),
     Date(
-      date: DateTime(2023, 11, 1),
+      date: DateTime(DateTime.now().year, 11, 1),
       color: Colors.red,
     ),
     Date(
-      date: DateTime(2023, 11, 4),
+      date: DateTime(DateTime.now().year, 11, 4),
       color: Colors.white,
       textColor: Colors.red,
     ),
     Date(
-      date: DateTime(2023, 11, 5),
+      date: DateTime(DateTime.now().year, 11, 5),
       color: Colors.white,
       textColor: Colors.red,
       icon: const Icon(
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
     Date(
-      date: DateTime(2023, 11, 18),
+      date: DateTime(DateTime.now().year, 11, 18),
       color: Colors.blue,
       textColor: Colors.amber,
       icon: const Icon(
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
     Date(
-      date: DateTime(2023, 11, 22),
+      date: DateTime(DateTime.now().year, 11, 22),
       icon: const Icon(
         Icons.add,
         size: 15,
@@ -100,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   List<RangeDate> ranges = [
     RangeDate(
-      start: DateTime(2023, 11, 12),
-      end: DateTime(2023, 11, 15),
+      start: DateTime(DateTime.now().year, 11, 12),
+      end: DateTime(DateTime.now().year, 11, 15),
       color: Colors.red,
       icon: const Icon(
         Icons.add,
@@ -111,8 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
       toolTipArMessage: 'رسالة المدي',
     ),
     RangeDate(
-      start: DateTime(2023, 11, 24),
-      end: DateTime(2023, 11, 27),
+      start: DateTime(DateTime.now().year, 11, 24),
+      end: DateTime(DateTime.now().year, 11, 27),
       color: Colors.amber,
       icon: const Icon(
         Icons.add,
@@ -123,8 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
       toolTipArMessage: 'رسالة المدي',
     ),
     RangeDate(
-      start: DateTime(2023, 11, 30),
-      end: DateTime(2023, 11, 29),
+      start: DateTime(DateTime.now().year, 11, 30),
+      end: DateTime(DateTime.now().year, 11, 29),
     ),
   ];
 
@@ -196,8 +196,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     showHeader: false,
                     headerAlignment: MainAxisAlignment.center,
                     calendarStyle: CustomCalendarStyle.normal,
-                    animateDirection: CustomCalendarAnimatedDirection.vertical,
-                    movingArrowSize: 24,
                     spaceBetweenMovingArrow: 20,
                     showBorderAfterDayHeader: true,
                     showTooltip: true,

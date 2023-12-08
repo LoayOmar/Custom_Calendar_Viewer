@@ -106,7 +106,7 @@ final Function(List<RangeDate>)? onRangesUpdated;
 
 /// - There's 6 types to handle your calendar
 ///   - CustomCalendarType.view this will make the user can't press on the calendar just for view
-///   - CustomCalendarType.viewFullYear this will make the user can't press on the calendar just for view full year in the screen
+///   - CustomCalendarType.viewFullYear this will make the user can't press on the calendar just for view full year data in the screen
 ///   - CustomCalendarType.date this will make the user can add only one date
 ///   - CustomCalendarType.range this will make the user to add only one range
 ///   - CustomCalendarType.multiDates this will make the user can add multiple dates
@@ -129,6 +129,7 @@ final CustomCalendarStartDay calendarStartDay;
 /// - From here you can change the direction when you move between months there's 2 types
 ///   - CustomCalendarAnimatedDirection.horizontal
 ///   - CustomCalendarAnimatedDirection.vertical
+///   - If you use CustomCalendarType.viewFullYear the moving will be only horizontal
 final CustomCalendarAnimatedDirection animateDirection;
 
 /// - From here you can control the calendar start year
