@@ -5,8 +5,8 @@
 <a href="https://pub.dev/packages/custom_calendar_viewer/score"><img src="https://img.shields.io/pub/popularity/custom_calendar_viewer?logo=flutter" alt="Pub popularity"></a>
 <a href="https://pub.dev/packages/custom_calendar_viewer/score"><img src="https://img.shields.io/pub/points/custom_calendar_viewer?logo=flutter" alt="Pub points"></a>
 
-![P1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/p1.webp)
-![P2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/gifs/p2.jpg)
+![P1](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/p1.webp)
+![P2](https://raw.githubusercontent.com/LoayOmar/Custom_Calendar_Viewer/master/assets/images/p2.jpg)
 
 * Amazing package help you to view your plans or important dates in calendar.
 
