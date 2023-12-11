@@ -405,10 +405,20 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
   bool showOverlay = false;
   Timer? timer;
   List<GlobalKey> widgetKey = [];
+  List<List<GlobalKey>> keys = [];
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Scrollable.ensureVisible(
+        keys[DateTime.now().month - 1][DateTime.now().day - 1].currentContext!,
+        alignment: 0,
+        duration: const Duration(milliseconds: 500),
+      );
+    });
+
     _controller = AnimationController(
       vsync: this,
       duration: widget.duration,
@@ -421,6 +431,11 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
 
   @override
   void dispose() {
+    showOverlay = false;
+    if (overlayEntry != null) {
+      overlayEntry!.remove();
+      overlayEntry = null;
+    }
     timer?.cancel();
     super.dispose();
   }
@@ -694,7 +709,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
       }
     }
 
-    List<List<GlobalKey>> keys = [];
+    keys = [];
     for (int j = 0; j < 12; j++) {
       List<GlobalKey> k = [];
       for (int i = 0; i < 37; i++) {
