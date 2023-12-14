@@ -412,12 +412,15 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(keys[DateTime.now().month - 1][DateTime.now().day - 1].currentContext != null) {
+      if (keys[DateTime.now().month - 1][DateTime.now().day - 1]
+              .currentContext !=
+          null) {
         Scrollable.ensureVisible(
-        keys[DateTime.now().month - 1][DateTime.now().day - 1].currentContext!,
-        alignment: 0,
-        duration: const Duration(milliseconds: 500),
-      );
+          keys[DateTime.now().month - 1][DateTime.now().day - 1]
+              .currentContext!,
+          alignment: 0,
+          duration: const Duration(milliseconds: 500),
+        );
       }
     });
 
@@ -459,7 +462,15 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
     void getExtraDays() {
       if (widget.calendarStartDay == CustomCalendarStartDay.monday) {
         days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        arDays = ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
+        arDays = [
+          'الإثنين',
+          'الثلاثاء',
+          'الأربعاء',
+          'الخميس',
+          'الجمعة',
+          'السبت',
+          'الأحد'
+        ];
         if (firstDay == 'Mon') {
           extraDays = 0;
         } else if (firstDay == 'Tue') {
@@ -477,7 +488,15 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         }
       } else if (widget.calendarStartDay == CustomCalendarStartDay.sunday) {
         days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        arDays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        arDays = [
+          'الأحد',
+          'الإثنين',
+          'الثلاثاء',
+          'الأربعاء',
+          'الخميس',
+          'الجمعة',
+          'السبت'
+        ];
         if (firstDay == 'Sun') {
           extraDays = 0;
         } else if (firstDay == 'Mon') {
@@ -495,7 +514,15 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
         }
       } else if (widget.calendarStartDay == CustomCalendarStartDay.saturday) {
         days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-        arDays = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+        arDays = [
+          'السبت',
+          'الأحد',
+          'الإثنين',
+          'الثلاثاء',
+          'الأربعاء',
+          'الخميس',
+          'الجمعة'
+        ];
         if (firstDay == 'Sat') {
           extraDays = 0;
         } else if (firstDay == 'Sun') {
@@ -1363,9 +1390,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   child: widget.animateDirection ==
                           CustomCalendarAnimatedDirection.horizontal
                       ? SizedBox(
-                    height: widget.movingArrowSize,
-                    width: widget.movingArrowSize * 2,
-                        child: SvgPicture.asset(
+                          height: widget.movingArrowSize,
+                          width: widget.movingArrowSize * 2,
+                          child: SvgPicture.asset(
                             widget.local == 'en'
                                 ? 'assets/icons/back.svg'
                                 : 'assets/icons/forward.svg',
@@ -1375,7 +1402,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                             width: widget.movingArrowSize,
                             height: widget.movingArrowSize,
                           ),
-                      )
+                        )
                       : Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: widget.movingArrowColor,
@@ -1401,9 +1428,9 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                   child: widget.animateDirection ==
                           CustomCalendarAnimatedDirection.horizontal
                       ? SizedBox(
-                    height: widget.movingArrowSize,
-                    width: widget.movingArrowSize * 2,
-                        child: SvgPicture.asset(
+                          height: widget.movingArrowSize,
+                          width: widget.movingArrowSize * 2,
+                          child: SvgPicture.asset(
                             widget.local == 'en'
                                 ? 'assets/icons/forward.svg'
                                 : 'assets/icons/back.svg',
@@ -1413,7 +1440,7 @@ class _CustomCalendarViewerState extends State<CustomCalendarViewer>
                             width: widget.movingArrowSize,
                             height: widget.movingArrowSize,
                           ),
-                      )
+                        )
                       : Icon(
                           Icons.keyboard_arrow_up_rounded,
                           color: widget.movingArrowColor,

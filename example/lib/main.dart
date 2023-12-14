@@ -98,7 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
             radius: 5,
             backgroundColor: Colors.red,
           ),
-          SizedBox(width: 5,),
+          SizedBox(
+            width: 5,
+          ),
           Icon(
             Icons.add,
             size: 15,
