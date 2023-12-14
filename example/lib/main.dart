@@ -92,9 +92,18 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     Date(
       date: DateTime(DateTime.now().year, 11, 22),
-      icon: const Icon(
-        Icons.add,
-        size: 15,
+      icon: const Row(
+        children: [
+          CircleAvatar(
+            radius: 5,
+            backgroundColor: Colors.red,
+          ),
+          SizedBox(width: 5,),
+          Icon(
+            Icons.add,
+            size: 15,
+          ),
+        ],
       ),
     ),
   ];
