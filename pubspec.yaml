@@ -1,6 +1,6 @@
 name: custom_calendar_viewer
 description: Amazing package help you to view your plans or important dates in calendar.
-version: 0.4.7
+version: 0.4.9
 homepage: https://github.com/LoayOmar/Custom_Calendar_Viewer
 
 environment:
@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ^0.18.0
-  flutter_svg: ^2.0.8
-  flutter_colorpicker: ^1.0.3
+  intl: any
+  flutter_svg: any
+  flutter_colorpicker: any
 
 dev_dependencies:
   flutter_test:
